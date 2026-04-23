@@ -28,6 +28,7 @@ export default function LotteryDetail() {
   const [tab, setTab] = useState('participants')
   const [participants, setParticipants] = useState(mockParticipants.filter(p => p.lotteryId === id))
   const [rejectModal, setRejectModal] = useState(null)
+  const [viewProof, setViewProof] = useState(null)
   const [rejectReason, setRejectReason] = useState('')
 
   const lottery = mockLotteries.find(l => l.id === id)
@@ -227,73 +228,55 @@ export default function LotteryDetail() {
 
       {/* Tab: Payment Proofs */}
       {tab === 'proofs' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {participants.filter(p => p.proof || p.status === 'pending').map(p => (
-            <div key={p.id} className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', border: '1px solid var(--border)', marginBottom: 16 }}>
-              {/* Image Preview Side */}
-              <div style={{ width: 180, background: 'var(--bg-elevated)', position: 'relative', borderRight: '1px solid var(--border)' }}>
-                <img 
-                  src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=400" 
-                  alt="Payment Proof" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', display: 'flex', alignItems: 'flex-end', padding: 12 }}>
-                   <div style={{ color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-                     <Eye size={12} /> CLICK TO ENLARGE
-                   </div>
-                </div>
-              </div>
-
-              {/* Info Side */}
-              <div style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-                  <div className="flex gap-3">
-                    <img src={p.avatar} alt="" style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '2px solid var(--bg-page)' }} />
-                    <div>
-                      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{p.phone} · {p.city}</div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Sender</th>
+                <th>Reference</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {participants.filter(p => p.proof || p.status === 'pending').map(p => (
+                <tr key={p.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{p.name}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.phone}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 2 }}>Reference</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', fontFamily: 'monospace' }}>TXN-9823482</div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: 40, marginBottom: 'auto' }}>
-                  <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Amount Paid</div>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'Space Grotesk, sans-serif' }}>
-                      {lottery.ticketPrice.toLocaleString()} <span style={{ fontSize: 12, fontWeight: 500 }}>CDF</span>
+                  </td>
+                  <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>TXN-{Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
+                  <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
+                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>Apr 23, 2026</td>
+                  <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                  <td>
+                    <div className="flex items-center justify-end gap-2">
+                      <button className="btn btn-ghost btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => setViewProof(p)}>
+                        <Eye size={13} /> View Proof
+                      </button>
+                      {p.status === 'pending' && (
+                        <>
+                          <button className="btn btn-primary btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => approveP(p.id)}>
+                            <CheckCircle size={13} /> Approve
+                          </button>
+                          <button className="btn btn-danger btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => setRejectModal(p.id)}>
+                            <X size={13} /> Reject
+                          </button>
+                        </>
+                      )}
                     </div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Upload Date</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>Apr 23, 2026 · 14:22</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Method</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>M-Pesa Mobile</div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
-                  {p.status === 'pending' ? (
-                    <>
-                      <button className="btn btn-primary" style={{ height: 44, padding: '0 32px', borderRadius: 10 }} onClick={() => approveP(p.id)}>
-                        Approve Payment
-                      </button>
-                      <button className="btn btn-outline" style={{ height: 44, padding: '0 24px', borderRadius: 10, borderColor: 'var(--red)', color: 'var(--red)' }} onClick={() => setRejectModal(p.id)}>
-                        Reject
-                      </button>
-                    </>
-                  ) : (
-                    <span className={`badge badge-${p.status}`} style={{ padding: '8px 20px', fontSize: 12, fontWeight: 700 }}>{p.status.toUpperCase()}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           {participants.filter(p => p.proof || p.status === 'pending').length === 0 && (
             <div className="empty-state">
               <div className="empty-icon"><FileText size={48} style={{ opacity: 0.2 }} /></div>
@@ -301,6 +284,46 @@ export default function LotteryDetail() {
               <div className="empty-text">All payment proofs have been reviewed.</div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* View Proof Modal */}
+      {viewProof && (
+        <div className="modal-overlay" onClick={() => setViewProof(null)}>
+          <div className="modal" style={{ maxWidth: 500 }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Payment Proof — {viewProof.name}</span>
+              <button className="modal-close" onClick={() => setViewProof(null)}><X size={14} /></button>
+            </div>
+            <div className="modal-body" style={{ textAlign: 'center' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=800" 
+                alt="Payment Proof" 
+                style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }} 
+              />
+              <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Transaction Ref</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace' }}>TXN-3829482394</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Amount Verified</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
+                  </div>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  Submitted on Apr 23, 2026 at 14:22 via M-Pesa.
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-ghost" onClick={() => setViewProof(null)}>Close</button>
+              {viewProof.status === 'pending' && (
+                <button className="btn btn-primary" onClick={() => { approveP(viewProof.id); setViewProof(null); }}>Approve Now</button>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
