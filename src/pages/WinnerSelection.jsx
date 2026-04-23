@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Shuffle, Lock, Send, CheckCircle, Trophy } from 'lucide-react'
+import { ArrowLeft, Shuffle, Lock, Send, CheckCircle, Trophy, Megaphone, Target, Search } from 'lucide-react'
 import { mockLotteries, mockParticipants } from '../data/mockData'
 
 const STAGES = ['close', 'filter', 'select', 'confirm', 'manage']
@@ -47,7 +47,9 @@ export default function WinnerSelection() {
 
       <div className="section-header mb-6">
         <div>
-          <div className="section-title">🏆 Winner Selection</div>
+          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Trophy size={24} style={{ color: 'var(--gold)' }} /> Winner Selection
+          </div>
           <div className="section-sub">{lottery?.title}</div>
         </div>
       </div>
@@ -68,7 +70,7 @@ export default function WinnerSelection() {
       {/* Stage 0: Close */}
       {stage === 0 && (
         <div className="card" style={{ padding: 32, textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+          <div style={{ color: 'var(--red)', opacity: 0.8, marginBottom: 16, display: 'flex', justifyContent: 'center' }}><Lock size={48} /></div>
           <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}>Close the Lottery</h3>
           <p style={{ fontSize: 14, color: 'var(--text-muted)', maxWidth: 400, margin: '0 auto 24px' }}>
             Closing this lottery will lock all new participant entries. Current status: <strong style={{ color: 'var(--green)' }}>Active</strong>
@@ -86,7 +88,7 @@ export default function WinnerSelection() {
       {stage === 1 && (
         <div className="card" style={{ padding: 32 }}>
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+            <div style={{ color: 'var(--accent-light)', opacity: 0.8, marginBottom: 12, display: 'flex', justifyContent: 'center' }}><Search size={48} /></div>
             <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Filter Eligible Participants</h3>
             <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>Only <strong style={{ color: 'var(--green)' }}>approved</strong> participants enter the winner pool</p>
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>* System auto-verifies: Age 18+ and residing in valid cities (Kinshasa, Matadi, Boma, etc.)</p>
@@ -136,7 +138,7 @@ export default function WinnerSelection() {
           }}>
             {winner ? (
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 40, marginBottom: 10 }}>🎯</div>
+                <div style={{ color: 'var(--gold)', marginBottom: 10, display: 'flex', justifyContent: 'center' }}><Target size={40} /></div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: rolling ? 'var(--text-muted)' : 'var(--gold)', fontFamily: "'Space Grotesk',sans-serif", transition: 'color .2s' }}>
                   {winner.name}
                 </div>
@@ -163,7 +165,7 @@ export default function WinnerSelection() {
       {/* Stage 3: Confirm */}
       {stage === 3 && winner && (
         <div className="winner-stage">
-          <div className="winner-trophy">🏆</div>
+          <div className="winner-trophy"><Trophy size={64} /></div>
           <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>Selected Winner</div>
           <div className="winner-name">{winner.name}</div>
           <div style={{ fontSize: 15, color: 'var(--text-muted)', marginBottom: 8 }}>{winner.phone}</div>
@@ -185,7 +187,7 @@ export default function WinnerSelection() {
       {/* Stage 4: Publish & Manage */}
       {stage === 4 && winner && (
         <div className="winner-stage">
-          <div style={{ fontSize: 64, marginBottom: 16 }}>📣</div>
+          <div style={{ color: 'var(--primary)', marginBottom: 16, display: 'flex', justifyContent: 'center' }}><Megaphone size={64} /></div>
           <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>Winner Management</h3>
           <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>Official Winner:</p>
           <div className="winner-name" style={{ marginBottom: 6 }}>{winner.name}</div>

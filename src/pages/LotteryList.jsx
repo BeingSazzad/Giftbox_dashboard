@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Search, Filter, Eye, Edit, Pause, X, RefreshCw } from 'lucide-react'
+import { Plus, Search, Filter, Eye, Edit, Pause, X, RefreshCw, Gift, Users, Clock, Award } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
 const FILTERS = ['All', 'active', 'scheduled', 'drawing', 'completed', 'draft']
@@ -49,7 +49,7 @@ export default function LotteryList() {
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🎁</div>
+          <div className="empty-icon"><Gift size={48} style={{ opacity: 0.2 }} /></div>
           <div className="empty-title">No lotteries found</div>
           <div className="empty-text">Try adjusting your filter or create a new lottery.</div>
         </div>
@@ -76,8 +76,10 @@ function LotteryCard({ lottery: l, onView }) {
           width: '100%', height: '100%',
           background: `linear-gradient(135deg, var(--bg-elevated), ${bannerGrad(l.id)})`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 48,
-        }}>🎁</div>
+          color: 'var(--text-muted)', opacity: 0.8
+        }}>
+          <Gift size={64} strokeWidth={1} />
+        </div>
         <div className="lottery-banner-overlay" />
         <div className="lottery-banner-badge">
           <span className={`badge badge-${l.status}`}>{l.status}</span>
@@ -93,11 +95,11 @@ function LotteryCard({ lottery: l, onView }) {
         <div className="lottery-title">{l.title}</div>
         <div className="lottery-meta">
           <div className="lottery-stat">
-            👥 <strong>{l.participants}</strong> participants
+            <Users size={12} style={{ color: 'var(--text-muted)' }} /> <strong>{l.participants}</strong> participants
           </div>
           {l.pendingApprovals > 0 && (
             <div className="lottery-stat" style={{ color: 'var(--gold)' }}>
-              ⏳ <strong>{l.pendingApprovals}</strong> pending
+              <Clock size={12} /> <strong>{l.pendingApprovals}</strong> pending
             </div>
           )}
         </div>

@@ -25,11 +25,11 @@ export default function UserProfile() {
   )
 
   const activityLog = [
-    { text: `Registered account`, time: user.joined, icon: '👤' },
-    { text: 'Participated in iPhone 15 Pro Max lottery', time: '2026-04-10', icon: '🎁' },
-    { text: 'Uploaded payment proof', time: '2026-04-10', icon: '📱' },
-    { text: 'Payment approved by admin', time: '2026-04-11', icon: '✅' },
-    { text: 'Participated in Samsung TV lottery', time: '2026-03-20', icon: '🎁' },
+    { text: `Registered account`, time: user.joined, icon: Users },
+    { text: 'Participated in iPhone 15 Pro Max lottery', time: '2026-04-10', icon: Gift },
+    { text: 'Uploaded payment proof', time: '2026-04-10', icon: CreditCard },
+    { text: 'Payment approved by admin', time: '2026-04-11', icon: CheckCircle },
+    { text: 'Participated in Samsung TV lottery', time: '2026-03-20', icon: Gift },
   ]
 
   return (
@@ -225,7 +225,9 @@ export default function UserProfile() {
         <div className="card" style={{ padding: '6px 20px' }}>
           {activityLog.map((a, i) => (
             <div key={i} className="activity-item">
-              <span style={{ fontSize: 18 }}>{a.icon}</span>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)' }}>
+                <a.icon size={14} />
+              </div>
               <div className="activity-detail">
                 <div className="activity-text">{a.text}</div>
                 <div className="activity-time">{a.time}</div>

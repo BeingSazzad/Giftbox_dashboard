@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Users, Clock, CheckCircle, XCircle, RotateCcw,
-  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp
+  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp, AlertTriangle, FileText, Smartphone, HelpCircle
 } from 'lucide-react'
 import { mockLotteries, mockParticipants } from '../data/mockData'
 
@@ -35,7 +35,7 @@ export default function LotteryDetail() {
 
   if (!lottery) return (
     <div className="empty-state">
-      <div className="empty-icon">❓</div>
+      <div className="empty-icon"><HelpCircle size={48} style={{ opacity: 0.2 }} /></div>
       <div className="empty-title">Lottery not found</div>
       <button className="btn btn-primary" style={{ margin: '14px auto 0', display: 'flex' }} onClick={() => navigate('/lotteries')}>
         <ArrowLeft size={14} /> Back
@@ -82,7 +82,9 @@ export default function LotteryDetail() {
 
           {/* Prize row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <div style={{ width: 52, height: 52, background: 'rgba(245,158,11,.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, border: '1px solid rgba(245,158,11,.25)' }}>🏆</div>
+            <div style={{ width: 52, height: 52, background: 'rgba(245,158,11,.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)', border: '1px solid rgba(245,158,11,.25)' }}>
+              <Trophy size={24} />
+            </div>
             <div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: .5, fontWeight: 600 }}>Prize</div>
               <div style={{ fontWeight: 700, fontSize: 15 }}>{lottery.prize.name}</div>
@@ -165,7 +167,7 @@ export default function LotteryDetail() {
           {/* Winner Badge */}
           {lottery.status === 'completed' && lottery.winner && (
             <div style={{ background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.25)', borderRadius: 12, padding: '14px', textAlign: 'center', width: '100%' }}>
-              <div style={{ fontSize: 20, marginBottom: 6 }}>🏆</div>
+              <div style={{ color: 'var(--gold)', marginBottom: 6, display: 'flex', justifyContent: 'center' }}><Trophy size={28} /></div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>WINNER</div>
               <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--gold)' }}>{lottery.winner.name}</div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{lottery.winner.city}</div>
@@ -186,10 +188,10 @@ export default function LotteryDetail() {
             </button>
           ))}
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--green)', fontWeight: 600 }}>✓ {statCounts.approved} approved</span>
-          <span style={{ color: 'var(--gold)', fontWeight: 600 }}>⏳ {statCounts.pending} pending</span>
-          <span style={{ color: 'var(--red)', fontWeight: 600 }}>✕ {statCounts.rejected} rejected</span>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)' }}>
+          <span style={{ color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><CheckCircle size={13} /> {statCounts.approved} approved</span>
+          <span style={{ color: 'var(--gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={13} /> {statCounts.pending} pending</span>
+          <span style={{ color: 'var(--red)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><XCircle size={13} /> {statCounts.rejected} rejected</span>
         </div>
       </div>
 
@@ -228,7 +230,9 @@ export default function LotteryDetail() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {participants.filter(p => p.proof || p.status === 'pending').map(p => (
             <div key={p.id} className="proof-card">
-              <div className="proof-img" style={{ fontSize: 28, background: 'rgba(124,58,237,.1)' }}>📱</div>
+              <div className="proof-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)', background: 'rgba(124,58,237,.1)' }}>
+                <Smartphone size={24} />
+              </div>
               <div className="proof-info">
                 <div className="proof-name">{p.name}</div>
                 <div className="proof-meta">
@@ -257,7 +261,7 @@ export default function LotteryDetail() {
           ))}
           {participants.filter(p => p.proof || p.status === 'pending').length === 0 && (
             <div className="empty-state">
-              <div className="empty-icon">📋</div>
+              <div className="empty-icon"><FileText size={48} style={{ opacity: 0.2 }} /></div>
               <div className="empty-title">No pending proofs</div>
               <div className="empty-text">All payment proofs have been reviewed.</div>
             </div>

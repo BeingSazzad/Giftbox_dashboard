@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Gift, Users, Clock, CheckCircle, DollarSign, Plus,
-  Eye, Search, TrendingUp, AlertCircle, Zap, BarChart2, ArrowRight, Trophy
+  Eye, Search, TrendingUp, AlertCircle, Zap, BarChart2, ArrowRight, Trophy, Tag, CheckSquare, CreditCard, Wallet, Award
 } from 'lucide-react'
 import { mockLotteries, mockParticipants, mockUsers } from '../data/mockData'
 import {
@@ -75,10 +75,10 @@ export default function Dashboard() {
 
   const metrics = [
     { label: 'Total Users', value: mockUsers.length.toLocaleString(), icon: Users, color: 'blue', change: '12%', dir: 'up' },
-    { label: 'Draws Completed', value: completedDraws.toLocaleString(), icon: Gift, color: 'accent', change: '1', dir: 'up' },
-    { label: 'Pending Payments', value: pendingPayments.toLocaleString(), icon: Clock, color: 'gold', change: pendingPayments > 0 ? 'Action needed' : 'All clear', dir: pendingPayments > 0 ? 'down' : 'up' },
-    { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: TrendingUp, color: 'green', change: '24%', dir: 'up' },
-    { label: 'Total Revenue', value: `${(totalRevenue / 1000).toFixed(0)}K CDF`, icon: DollarSign, color: 'pink', change: '18%', dir: 'up' },
+    { label: 'Draws Completed', value: completedDraws.toLocaleString(), icon: CheckSquare, color: 'accent', change: '1', dir: 'up' },
+    { label: 'Pending Payments', value: pendingPayments.toLocaleString(), icon: CreditCard, color: 'gold', change: pendingPayments > 0 ? 'Action needed' : 'All clear', dir: pendingPayments > 0 ? 'down' : 'up' },
+    { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: Tag, color: 'green', change: '24%', dir: 'up' },
+    { label: 'Total Revenue', value: `${(totalRevenue / 1000).toFixed(0)}K CDF`, icon: Wallet, color: 'pink', change: '18%', dir: 'up' },
   ]
 
   const nextLottery = mockLotteries.find(l => l.status === 'active')
@@ -256,7 +256,9 @@ export default function Dashboard() {
                 <tr key={l.id}>
                   <td>
                     <div className="flex items-center gap-2">
-                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg, var(--bg-elevated), var(--accent-glow))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>🎁</div>
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg, var(--bg-elevated), var(--accent-glow))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)', flexShrink: 0 }}>
+                        <Award size={18} />
+                      </div>
                       <span className="td-primary" style={{ fontSize: 13 }}>{l.title}</span>
                     </div>
                   </td>
