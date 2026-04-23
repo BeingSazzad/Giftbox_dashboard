@@ -241,11 +241,11 @@ img { max-width: 100%; }
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 24px;
+  padding: 22px 20px;
   display: flex; flex-direction: column; gap: 16px;
   transition: var(--transition);
   position: relative; overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  box-shadow: var(--shadow-sm);
 }
 .metric-card:hover { border-color: var(--border-dark); transform: translateY(-2px); box-shadow: var(--shadow-card); }
 
@@ -261,7 +261,7 @@ img { max-width: 100%; }
 .metric-icon.pink { background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(236,72,153,0.05)); color: #ec4899; box-shadow: 0 8px 16px rgba(236,72,153,0.15); }
 .metric-icon.red    { background: var(--red-bg);    color: #DC2626; }
 
-.metric-value { font-size: 26px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--text-primary); }
+.metric-value { font-size: 24px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--text-primary); }
 .metric-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
 .metric-change { font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 3px; }
 .metric-change.up   { color: var(--green); }
@@ -470,16 +470,24 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
 
 /* ===== COUNTDOWN ===== */
 .countdown {
-  display: inline-flex; gap: 6px; align-items: center;
+  display: inline-flex; gap: 14px; align-items: center;
   background: var(--gold-bg);
-  border: 1px solid rgba(245,158,11,.25);
+  border: 1px solid rgba(245,158,11,.2);
   border-radius: var(--radius-md);
-  padding: 8px 14px;
+  padding: 12px 20px;
 }
-.countdown-seg { text-align: center; }
-.countdown-num { font-size: 20px; font-weight: 800; color: #D97706; font-family: 'Space Grotesk', sans-serif; line-height: 1; }
-.countdown-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
-.countdown-sep { color: #D97706; font-weight: 800; font-size: 18px; margin-bottom: 10px; }
+.countdown-seg { 
+  display: flex; flex-direction: column; align-items: center; 
+  min-width: 32px; /* Fixed width to prevent jumping */
+}
+.countdown-num { 
+  font-size: 24px; font-weight: 800; color: #D97706; 
+  font-family: 'Space Grotesk', sans-serif; 
+  line-height: 1; 
+  font-variant-numeric: tabular-nums; /* Critical: prevents width changes */
+}
+.countdown-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; margin-top: 3px; }
+.countdown-sep { color: #D97706; font-weight: 700; font-size: 20px; opacity: 0.5; margin-top: -16px; }
 
 /* ===== LOTTERY GRID ===== */
 .lottery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
@@ -585,11 +593,11 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
 .quick-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px 12px;
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
   text-align: center; cursor: pointer;
   transition: var(--transition);
-  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   box-shadow: var(--shadow-sm);
 }
 .quick-card:hover { border-color: var(--primary); background: var(--primary-subtle); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
@@ -681,8 +689,8 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 18px;
-  display: flex; gap: 14px;
+  padding: 24px;
+  display: flex; gap: 18px;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
 }

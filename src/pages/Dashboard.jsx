@@ -44,13 +44,13 @@ function CountdownWidget({ date }) {
   return (
     <div className="countdown">
       {[['d', d], ['h', h], ['m', m], ['s', s]].map(([lbl, val], i) => (
-        <>
-          <div className="countdown-seg" key={lbl}>
+        <div key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="countdown-seg">
             <div className="countdown-num">{String(val).padStart(2, '0')}</div>
             <div className="countdown-label">{lbl}</div>
           </div>
           {i < 3 && <span className="countdown-sep">:</span>}
-        </>
+        </div>
       ))}
     </div>
   )
@@ -131,7 +131,7 @@ export default function Dashboard() {
               <div className="metric-label" style={{ fontSize: '14px', textTransform: 'none', letterSpacing: 0, fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>
                 {m.label}
               </div>
-              <div className="metric-value" style={{ fontSize: '32px', fontFamily: 'Inter, sans-serif' }}>
+              <div className="metric-value" style={{ fontSize: '24px', fontFamily: "'Space Grotesk', sans-serif" }}>
                 {m.value}
               </div>
             </div>

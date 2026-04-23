@@ -130,18 +130,20 @@ export default function LotteryDetail() {
 
           {/* Countdown Box */}
           {lottery.status === 'active' && (
-            <div style={{ background: 'var(--bg-card)', padding: '16px 20px', borderRadius: 12, border: '1px solid var(--border)', width: '100%', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12, fontWeight: 700, letterSpacing: 1 }}>CLOSES IN</div>
-              <div className="countdown" style={{ justifyContent: 'center' }}>
-                {[['d', d], ['h', h], ['m', m], ['s', s]].map(([lbl, val], i) => (
-                  <span key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span className="countdown-seg">
-                      <div className="countdown-num">{String(val).padStart(2,'0')}</div>
-                      <div className="countdown-label">{lbl}</div>
-                    </span>
-                    {i < 3 && <span className="countdown-sep">:</span>}
-                  </span>
-                ))}
+            <div style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: 14, border: '1px solid var(--border)', width: '100%', boxShadow: 'var(--shadow-card)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 16, fontWeight: 700, letterSpacing: 1.5 }}>CLOSES IN</div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="countdown">
+                  {[['d', d], ['h', h], ['m', m], ['s', s]].map(([lbl, val], i) => (
+                    <div key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div className="countdown-seg">
+                        <div className="countdown-num">{String(val).padStart(2,'0')}</div>
+                        <div className="countdown-label">{lbl}</div>
+                      </div>
+                      {i < 3 && <div className="countdown-sep">:</div>}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -233,9 +235,9 @@ export default function LotteryDetail() {
             <thead>
               <tr>
                 <th>Sender</th>
+                <th>Method</th>
                 <th>Reference</th>
                 <th>Amount</th>
-                <th>Date</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
@@ -252,9 +254,16 @@ export default function LotteryDetail() {
                       </div>
                     </div>
                   </td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600 }}>
+                      <div style={{ width: 24, height: 24, borderRadius: 6, background: p.id % 3 === 0 ? '#FF6B0015' : p.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.id % 3 === 0 ? '#FF6B00' : p.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
+                        <Smartphone size={14} />
+                      </div>
+                      {p.id % 3 === 0 ? 'Orange' : p.id % 3 === 1 ? 'M-Pesa' : 'Airtel'}
+                    </div>
+                  </td>
                   <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>TXN-{Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
                   <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
-                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>Apr 23, 2026</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                   <td>
                     <div className="flex items-center justify-end gap-2">
@@ -301,19 +310,26 @@ export default function LotteryDetail() {
                 alt="Payment Proof" 
                 style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }} 
               />
-              <div style={{ marginTop: 20, padding: 16, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div style={{ marginTop: 20, padding: 18, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Transaction Ref</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Transaction Ref</div>
                     <div style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace' }}>TXN-3829482394</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Amount Verified</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Paid</div>
                     <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                  Submitted on Apr 23, 2026 at 14:22 via M-Pesa.
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: viewProof.id % 3 === 0 ? '#FF6B0015' : viewProof.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: viewProof.id % 3 === 0 ? '#FF6B00' : viewProof.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
+                    <Smartphone size={18} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700 }}>{viewProof.id % 3 === 0 ? 'Orange Money' : viewProof.id % 3 === 1 ? 'M-Pesa (Vodacom)' : 'Airtel Money'}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Submitted via mobile wallet</div>
+                  </div>
+                  <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>Apr 23, 14:22</div>
                 </div>
               </div>
             </div>
