@@ -229,42 +229,67 @@ export default function LotteryDetail() {
       {tab === 'proofs' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {participants.filter(p => p.proof || p.status === 'pending').map(p => (
-            <div key={p.id} className="proof-card" style={{ padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, display: 'flex', gap: 20 }}>
-              <div className="proof-img" style={{ width: 140, height: 180, borderRadius: 12, overflow: 'hidden', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', flexShrink: 0 }}>
+            <div key={p.id} className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', border: '1px solid var(--border)', marginBottom: 16 }}>
+              {/* Image Preview Side */}
+              <div style={{ width: 180, background: 'var(--bg-elevated)', position: 'relative', borderRight: '1px solid var(--border)' }}>
                 <img 
                   src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=400" 
                   alt="Payment Proof" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)', display: 'flex', alignItems: 'flex-end', padding: 12 }}>
+                   <div style={{ color: '#fff', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                     <Eye size={12} /> CLICK TO ENLARGE
+                   </div>
+                </div>
               </div>
-              <div className="proof-info" style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                  <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
-                  <div>
-                    <div className="proof-name" style={{ fontSize: 16, fontWeight: 700 }}>{p.name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{p.phone} · {p.city}</div>
+
+              {/* Info Side */}
+              <div style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+                  <div className="flex gap-3">
+                    <img src={p.avatar} alt="" style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', objectFit: 'cover', border: '2px solid var(--bg-page)' }} />
+                    <div>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>{p.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{p.phone} · {p.city}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 2 }}>Reference</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--primary)', fontFamily: 'monospace' }}>TXN-9823482</div>
                   </div>
                 </div>
-                
-                <div style={{ background: 'var(--bg-elevated)', padding: '12px 16px', borderRadius: 10, marginBottom: 16 }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Amount Paid</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
+
+                <div style={{ display: 'flex', gap: 40, marginBottom: 'auto' }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Amount Paid</div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'Space Grotesk, sans-serif' }}>
+                      {lottery.ticketPrice.toLocaleString()} <span style={{ fontSize: 12, fontWeight: 500 }}>CDF</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Upload Date</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>Apr 23, 2026 · 14:22</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', marginBottom: 4 }}>Method</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>M-Pesa Mobile</div>
+                  </div>
                 </div>
 
-                <div className="proof-actions" style={{ display: 'flex', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
                   {p.status === 'pending' ? (
                     <>
-                      <button className="btn btn-primary btn-sm" style={{ flex: 1, justifyContent: 'center' }} onClick={() => approveP(p.id)}>
-                        <CheckCircle size={14} /> Approve Payment
+                      <button className="btn btn-primary" style={{ height: 44, padding: '0 32px', borderRadius: 10 }} onClick={() => approveP(p.id)}>
+                        Approve Payment
                       </button>
-                      <button className="btn btn-outline btn-sm" style={{ borderColor: 'var(--red)', color: 'var(--red)', background: 'transparent' }} onClick={() => setRejectModal(p.id)}>
-                        <XCircle size={14} /> Reject
+                      <button className="btn btn-outline" style={{ height: 44, padding: '0 24px', borderRadius: 10, borderColor: 'var(--red)', color: 'var(--red)' }} onClick={() => setRejectModal(p.id)}>
+                        Reject
                       </button>
                     </>
                   ) : (
-                    <span className={`badge badge-${p.status}`} style={{ padding: '8px 16px', fontSize: 12 }}>{p.status.toUpperCase()}</span>
+                    <span className={`badge badge-${p.status}`} style={{ padding: '8px 20px', fontSize: 12, fontWeight: 700 }}>{p.status.toUpperCase()}</span>
                   )}
-                  <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }}><Eye size={14} /> View Large</button>
                 </div>
               </div>
             </div>
