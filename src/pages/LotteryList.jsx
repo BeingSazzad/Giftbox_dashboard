@@ -8,6 +8,7 @@ const FILTERS = ['All', 'active', 'scheduled', 'drawing', 'completed', 'draft']
 export default function LotteryList() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState('All')
+  const [activeTab, setActiveTab] = useState(new URLSearchParams(window.location.search).get('tab') === 'history' ? 'history' : 'management')
   const [search, setSearch] = useState('')
 
   const statusOrder = { drawing: 1, locked: 2, active: 3, scheduled: 4, draft: 5, completed: 6 }
@@ -23,41 +24,97 @@ export default function LotteryList() {
       {/* Header */}
       <div className="section-header mb-6">
         <div>
-          <div className="section-title">Lottery Management</div>
-          <div className="section-sub">{mockLotteries.length} total lotteries in system</div>
+          <div className="section-title">Lottery Dashboard</div>
+          <div className="section-sub">Manage active lotteries and view past draw results</div>
         </div>
         <button className="btn btn-primary" onClick={() => navigate('/lotteries/create')}>
           <Plus size={15} /> Create Lottery
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-3 mb-6" style={{ flexWrap: 'wrap' }}>
-        <div className="search-box" style={{ width: 260 }}>
-          <Search size={14} className="search-icon" />
-          <input placeholder="Search lotteries..." value={search} onChange={e => setSearch(e.target.value)} />
-        </div>
-        <div className="tabs">
-          {FILTERS.map(f => (
-            <button key={f} className={`tab-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
-        </div>
+      <div className="tabs mb-6" style={{ borderBottom: '1px solid var(--border)' }}>
+        <button className={`tab-btn ${activeTab === 'management' ? 'active' : ''}`} onClick={() => setActiveTab('management')}>
+          Lottery Management
+        </button>
+        <button className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
+          Draw History
+        </button>
       </div>
 
-      {/* Grid */}
-      {filtered.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon"><Gift size={48} style={{ opacity: 0.2 }} /></div>
-          <div className="empty-title">No lotteries found</div>
-          <div className="empty-text">Try adjusting your filter or create a new lottery.</div>
-        </div>
+      {activeTab === 'management' ? (
+        <>
+          {/* Filters */}
+          <div className="flex items-center gap-3 mb-6" style={{ flexWrap: 'wrap' }}>
+            <div className="search-box" style={{ width: 260 }}>
+              <Search size={14} className="search-icon" />
+              <input placeholder="Search lotteries..." value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div className="tabs">
+              {FILTERS.map(f => (
+                <button key={f} className={`tab-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
+                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Grid */}
+          {filtered.filter(l => l.status !== 'completed').length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon"><Gift size={48} style={{ opacity: 0.2 }} /></div>
+              <div className="empty-title">No active lotteries found</div>
+              <div className="empty-text">Try adjusting your filter or create a new lottery.</div>
+            </div>
+          ) : (
+            <div className="lottery-grid">
+              {filtered.filter(l => l.status !== 'completed').map(l => (
+                <LotteryCard key={l.id} lottery={l} onView={() => navigate(`/lotteries/${l.id}`)} />
+              ))}
+            </div>
+          )}
+        </>
       ) : (
-        <div className="lottery-grid">
-          {filtered.map(l => (
-            <LotteryCard key={l.id} lottery={l} onView={() => navigate(`/lotteries/${l.id}`)} />
-          ))}
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Lottery</th>
+                <th>Winner</th>
+                <th>Participants</th>
+                <th>Revenue</th>
+                <th>Closed Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockLotteries.filter(l => l.status === 'completed').map(l => (
+                <tr key={l.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)' }}>
+                        <Award size={16} />
+                      </div>
+                      <span className="td-primary">{l.title}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <img src={l.winner?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'} alt="" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+                      <span style={{ fontWeight: 600, color: 'var(--gold)' }}>{l.winner?.name || 'Unknown'}</span>
+                    </div>
+                  </td>
+                  <td>{l.participants}</td>
+                  <td>{l.revenue.toLocaleString()} CDF</td>
+                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{l.endDate}</td>
+                  <td>
+                    <button className="btn btn-outline btn-sm" onClick={() => navigate(`/lotteries/${l.id}`)}>
+                      <Eye size={12} /> Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

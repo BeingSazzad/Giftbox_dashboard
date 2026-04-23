@@ -233,7 +233,7 @@ export default function Dashboard() {
             <div className="section-title">Draws History</div>
             <div className="section-sub">Current and past weekly draws</div>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={() => navigate('/lotteries')}>
+          <button className="btn btn-primary btn-sm" onClick={() => navigate('/lotteries?tab=history')}>
             <Eye size={13} /> View All <ArrowRight size={12} />
           </button>
         </div>

@@ -129,27 +129,32 @@ export default function WinnerSelection() {
             <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Drawing from {approved.length} approved participants</p>
           </div>
 
-          {/* Rolling display */}
           <div style={{
             minHeight: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'rgba(124,58,237,.08)', border: '2px dashed var(--border-bright)',
             borderRadius: 'var(--radius-xl)', marginBottom: 28, padding: 24,
             transition: 'all .1s',
+            position: 'relative'
           }}>
             {winner ? (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ color: 'var(--gold)', marginBottom: 10, display: 'flex', justifyContent: 'center' }}><Target size={40} /></div>
                 <div style={{ fontSize: 24, fontWeight: 800, color: rolling ? 'var(--text-muted)' : 'var(--gold)', fontFamily: "'Space Grotesk',sans-serif", transition: 'color .2s' }}>
-                  {winner.name}
+                   {winner.name}
                 </div>
                 {!rolling && <div style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 6 }}>{winner.phone} · {winner.city}</div>}
+                {!rolling && locked && <div className="badge badge-primary" style={{ position: 'absolute', top: 12, right: 12 }}>Manual Selection</div>}
               </div>
             ) : (
-              <div style={{ color: 'var(--text-muted)', fontSize: 14 }}>Press the button to draw a winner</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: 14, textAlign: 'center' }}>
+                <p>Press the button for a random draw</p>
+                <p style={{ marginTop: 8, fontSize: 12 }}>OR</p>
+                <p style={{ marginTop: 8 }}>Select a participant from the list below</p>
+              </div>
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 32 }}>
             <button className="btn btn-primary btn-lg" onClick={rollWinner} disabled={rolling} style={{ minWidth: 180 }}>
               <Shuffle size={16} /> {rolling ? 'Drawing...' : 'Random Draw'}
             </button>
@@ -159,6 +164,31 @@ export default function WinnerSelection() {
               </button>
             )}
           </div>
+
+          {!rolling && (
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>Manual Participant Selection</div>
+              <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+                {approved.map(p => (
+                  <div 
+                    key={p.id} 
+                    className="flex items-center justify-between p-3 mb-2 rounded-lg border border-transparent hover:border-primary cursor-pointer transition-all"
+                    style={{ background: winner?.id === p.id ? 'var(--primary-subtle)' : 'var(--bg-elevated)', border: winner?.id === p.id ? '1px solid var(--primary)' : '1px solid transparent' }}
+                    onClick={() => { setWinner(p); setLocked(true); }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%' }} />
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{p.name}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.phone} · {p.city}</div>
+                      </div>
+                    </div>
+                    {winner?.id === p.id && <CheckCircle size={16} style={{ color: 'var(--primary)' }} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -189,6 +219,7 @@ export default function WinnerSelection() {
         <div className="winner-stage">
           <div style={{ color: 'var(--primary)', marginBottom: 16, display: 'flex', justifyContent: 'center' }}><Megaphone size={64} /></div>
           <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>Winner Management</h3>
+          <div className="badge badge-active mb-4" style={{ padding: '6px 12px' }}>Draw Finalized</div>
           <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>Official Winner:</p>
           <div className="winner-name" style={{ marginBottom: 6 }}>{winner.name}</div>
           <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24 }}>{winner.city} · {winner.phone}</div>
@@ -204,7 +235,22 @@ export default function WinnerSelection() {
              </div>
           ) : (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, textAlign: 'left' }}>
-              <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: 'var(--text-primary)' }}>Post-Draw Protocol</h4>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'between', marginBottom: 16 }}>
+                <h4 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>Post-Draw Protocol</h4>
+                <button 
+                  className="btn btn-ghost btn-sm" 
+                  style={{ marginLeft: 'auto', color: 'var(--red)', background: 'rgba(239,68,68,.05)' }}
+                  onClick={() => {
+                    if (window.confirm("Prize not claimed? You can re-draw or change the winner within 5 days. Proceed?")) {
+                      setStage(2);
+                      setLocked(false);
+                      setWinner(null);
+                    }
+                  }}
+                >
+                  <RotateCcw size={12} /> Redraw / Change Winner
+                </button>
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                  <label className="remember-check" style={{ fontSize: 14, color: 'var(--text-primary)', display: 'flex', gap: 10, cursor: 'pointer', margin: 0 }}>
                    <input type="checkbox" style={{ width: 18, height: 18, accentColor: 'var(--primary)' }} /> 
@@ -220,7 +266,7 @@ export default function WinnerSelection() {
                  </label>
               </div>
               <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--red)', fontWeight: 500 }}>
-                 *If winner fails to respond within 3 days, they must be disqualified and the draw repeated.
+                 *If winner fails to respond within 5 days, they must be disqualified and the draw repeated.
               </div>
             </div>
           )}

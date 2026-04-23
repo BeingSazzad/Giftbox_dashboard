@@ -215,8 +215,8 @@ export default function LotteryDetail() {
                   <td className="td-primary">{p.name}</td>
                   <td>{p.phone}</td>
                   <td>{p.city}</td>
-                  <td style={{ fontWeight: 700, color: 'var(--accent-light)' }}>×{p.tickets}</td>
-                  <td>{(p.tickets * lottery.ticketPrice).toLocaleString()} CDF</td>
+                  <td style={{ fontWeight: 700, color: 'var(--accent-light)' }}>1 Ticket</td>
+                  <td>{lottery.ticketPrice.toLocaleString()} CDF</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                 </tr>
               ))}
@@ -229,32 +229,42 @@ export default function LotteryDetail() {
       {tab === 'proofs' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {participants.filter(p => p.proof || p.status === 'pending').map(p => (
-            <div key={p.id} className="proof-card">
-              <div className="proof-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)', background: 'rgba(124,58,237,.1)' }}>
-                <Smartphone size={24} />
+            <div key={p.id} className="proof-card" style={{ padding: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, display: 'flex', gap: 20 }}>
+              <div className="proof-img" style={{ width: 140, height: 180, borderRadius: 12, overflow: 'hidden', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', flexShrink: 0 }}>
+                <img 
+                  src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=400" 
+                  alt="Payment Proof" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
               </div>
-              <div className="proof-info">
-                <div className="proof-name">{p.name}</div>
-                <div className="proof-meta">
-                  {p.phone} · {p.city} · {p.tickets} ticket(s) · {(p.tickets * lottery.ticketPrice).toLocaleString()} CDF
+              <div className="proof-info" style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                  <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                  <div>
+                    <div className="proof-name" style={{ fontSize: 16, fontWeight: 700 }}>{p.name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{p.phone} · {p.city}</div>
+                  </div>
                 </div>
-                <div className="proof-actions">
+                
+                <div style={{ background: 'var(--bg-elevated)', padding: '12px 16px', borderRadius: 10, marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Amount Paid</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
+                </div>
+
+                <div className="proof-actions" style={{ display: 'flex', gap: 10 }}>
                   {p.status === 'pending' ? (
                     <>
-                      <button className="btn btn-success btn-sm" onClick={() => approveP(p.id)}>
-                        <CheckCircle size={12} /> Approve
+                      <button className="btn btn-primary btn-sm" style={{ flex: 1, justifyContent: 'center' }} onClick={() => approveP(p.id)}>
+                        <CheckCircle size={14} /> Approve Payment
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => setRejectModal(p.id)}>
-                        <XCircle size={12} /> Reject
-                      </button>
-                      <button className="btn btn-ghost btn-sm">
-                        <RotateCcw size={12} /> Re-upload
+                      <button className="btn btn-outline btn-sm" style={{ borderColor: 'var(--red)', color: 'var(--red)', background: 'transparent' }} onClick={() => setRejectModal(p.id)}>
+                        <XCircle size={14} /> Reject
                       </button>
                     </>
                   ) : (
-                    <span className={`badge badge-${p.status}`}>{p.status}</span>
+                    <span className={`badge badge-${p.status}`} style={{ padding: '8px 16px', fontSize: 12 }}>{p.status.toUpperCase()}</span>
                   )}
-                  <button className="btn btn-outline btn-sm"><Eye size={12} /> View Proof</button>
+                  <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto' }}><Eye size={14} /> View Large</button>
                 </div>
               </div>
             </div>
