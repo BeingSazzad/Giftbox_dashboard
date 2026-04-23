@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Filter, Eye, UserX, RotateCcw, Download } from 'lucide-react'
+import { Search, Filter, Eye, UserX, Download, Users as UsersIcon, UserCheck, UserMinus } from 'lucide-react'
 import { mockUsers } from '../data/mockData'
 
 export default function Users() {
@@ -32,16 +32,25 @@ export default function Users() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+      {/* Stats */}
+      <div className="metric-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: 24 }}>
         {[
-          { label: 'Total Users', value: mockUsers.length, color: 'var(--accent-light)' },
-          { label: 'Active', value: mockUsers.filter(u => u.status === 'active').length, color: 'var(--green)' },
-          { label: 'Suspended', value: mockUsers.filter(u => u.status === 'suspended').length, color: 'var(--red)' },
-          { label: 'Winners', value: mockUsers.filter(u => u.wins > 0).length, color: 'var(--gold)' },
+          { label: 'Total Users', value: mockUsers.length, color: 'accent', icon: UsersIcon },
+          { label: 'Active', value: mockUsers.filter(u => u.status === 'active').length, color: 'green', icon: UserCheck },
+          { label: 'Suspended', value: mockUsers.filter(u => u.status === 'suspended').length, color: 'red', icon: UserMinus },
         ].map(s => (
-          <div key={s.label} className="card" style={{ padding: '16px 18px' }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: s.color, fontFamily: "'Space Grotesk',sans-serif" }}>{s.value}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: .5, marginTop: 3 }}>{s.label}</div>
+          <div key={s.label} className={`metric-card ${s.color}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 16, padding: '20px 16px' }}>
+            <div className={`metric-icon ${s.color}`} style={{ width: 48, height: 48, flexShrink: 0 }}>
+              <s.icon size={22} strokeWidth={2.5} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="metric-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>
+                {s.label}
+              </div>
+              <div className="metric-value" style={{ fontSize: '26px', fontFamily: 'Space Grotesk, sans-serif' }}>
+                {s.value}
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -85,15 +94,8 @@ export default function Users() {
               <tr key={u.id}>
                 <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{i + 1}</td>
                 <td>
-                  <div className="flex items-center gap-2">
-                    <div style={{
-                      width: 32, height: 32, borderRadius: '50%',
-                      background: `linear-gradient(135deg, hsl(${Number(u.id)*47},70%,45%), hsl(${Number(u.id)*90},60%,35%))`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 12, fontWeight: 700, flexShrink: 0,
-                    }}>
-                      {u.name.charAt(0)}
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <img src={u.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border)' }} />
                     <span className="td-primary">{u.name}</span>
                   </div>
                 </td>

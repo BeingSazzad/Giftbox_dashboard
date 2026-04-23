@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Filter, Eye, Edit, Pause, X, RefreshCw } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
-const FILTERS = ['All', 'active', 'closed', 'completed', 'draft']
+const FILTERS = ['All', 'active', 'scheduled', 'drawing', 'completed', 'draft']
 
 export default function LotteryList() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState('All')
   const [search, setSearch] = useState('')
 
+  const statusOrder = { drawing: 1, locked: 2, active: 3, scheduled: 4, draft: 5, completed: 6 }
+
   const filtered = mockLotteries.filter(l => {
     const matchStatus = filter === 'All' || l.status === filter
     const matchSearch = l.title.toLowerCase().includes(search.toLowerCase())
     return matchStatus && matchSearch
-  })
+  }).sort((a, b) => (statusOrder[a.status] || 99) - (statusOrder[b.status] || 99))
 
   return (
     <div>

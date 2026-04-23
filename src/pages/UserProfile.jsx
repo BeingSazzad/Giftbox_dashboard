@@ -39,52 +39,102 @@ export default function UserProfile() {
       </button>
 
       {/* Profile Header */}
-      <div className="profile-header">
-        <div style={{
-          width: 72, height: 72, borderRadius: '50%',
-          background: `linear-gradient(135deg, hsl(${Number(user.id)*47},70%,45%), hsl(${Number(user.id)*90},60%,35%))`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 28, fontWeight: 700, flexShrink: 0,
-          border: '3px solid var(--accent-light)',
-        }}>
-          {user.name.charAt(0)}
-        </div>
-        <div style={{ flex: 1 }}>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="profile-name">{user.name}</div>
-            <span className={`badge ${suspended || user.status === 'suspended' ? 'badge-rejected' : 'badge-active'}`}>
-              {suspended || user.status === 'suspended' ? 'suspended' : 'active'}
-            </span>
-            {user.wins > 0 && <span style={{ fontSize: 13 }}>🏆 Winner</span>}
-          </div>
-          <div className="profile-phone">{user.phone} · {user.city}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>Joined {user.joined}</div>
-          <div className="profile-stats">
-            {[
-              { val: user.tickets, lbl: 'Tickets Bought' },
-              { val: user.wins, lbl: 'Lotteries Won' },
-              { val: (user.tickets * 2500).toLocaleString(), lbl: 'Total Spent (CDF)' },
-            ].map(s => (
-              <div key={s.lbl} className="profile-stat">
-                <div className="profile-stat-val">{s.val}</div>
-                <div className="profile-stat-lbl">{s.lbl}</div>
+      {/* Profile Header Card */}
+      <div className="card" style={{ padding: '32px', marginBottom: 24, position: 'relative', overflow: 'hidden' }}>
+        {/* Background Accent */}
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '100%', background: 'linear-gradient(225deg, var(--primary-subtle) 0%, transparent 70%)', zIndex: 0 }} />
+        
+        <div style={{ display: 'flex', gap: 32, alignItems: 'center', position: 'relative', zIndex: 1 }}>
+          <img 
+            src={user.avatar} 
+            alt={user.name} 
+            style={{ width: 100, height: 100, borderRadius: 'var(--radius-lg)', objectFit: 'cover', border: '4px solid var(--bg-page)', boxShadow: 'var(--shadow-card)' }} 
+          />
+          
+          <div style={{ flex: 1 }}>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>{user.name}</h1>
+              <span className={`badge ${suspended || user.status === 'suspended' ? 'badge-rejected' : 'badge-active'}`} style={{ padding: '6px 12px', fontSize: 11 }}>
+                {suspended || user.status === 'suspended' ? 'Suspended' : 'Active Account'}
+              </span>
+              {user.wins > 0 && <span style={{ padding: '4px 10px', background: 'var(--gold-bg)', color: 'var(--gold)', borderRadius: '20px', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>🏆 Verified Winner</span>}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px 32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <CreditCard size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phone Number</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.phone}</div>
+                </div>
               </div>
-            ))}
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <Activity size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email Address</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.email || 'user@giftbox.cd'}</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <RotateCcw size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>City / Location</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.city}</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <Activity size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Member Since</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.joined}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <button
+              className={`btn ${suspended || user.status === 'suspended' ? 'btn-success' : 'btn-danger'}`}
+              onClick={() => setSuspended(s => !s)}
+              style={{ minWidth: 140 }}
+            >
+              <UserX size={15} />
+              {suspended || user.status === 'suspended' ? 'Unsuspend' : 'Suspend User'}
+            </button>
+            <button className="btn btn-ghost">
+              <RotateCcw size={15} /> Reset Auth
+            </button>
           </div>
         </div>
 
-        {/* Actions */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button
-            className={`btn btn-sm ${suspended || user.status === 'suspended' ? 'btn-success' : 'btn-danger'}`}
-            onClick={() => setSuspended(s => !s)}
-          >
-            <UserX size={13} />
-            {suspended || user.status === 'suspended' ? 'Unsuspend' : 'Suspend User'}
-          </button>
-          <button className="btn btn-ghost btn-sm">
-            <RotateCcw size={13} /> Reset Password
-          </button>
+        {/* Quick Stats Banner */}
+        <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)', display: 'flex', gap: 40 }}>
+          {[
+            { val: user.tickets, lbl: 'Tickets Purchased', icon: Gift, color: 'var(--accent-light)' },
+            { val: user.wins, lbl: 'Lotteries Won', icon: Trophy, color: 'var(--gold)' },
+            { val: (user.tickets * 2500).toLocaleString() + ' CDF', lbl: 'Total Investment', icon: CreditCard, color: 'var(--green)' },
+          ].map(s => (
+            <div key={s.lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                <s.icon size={18} />
+              </div>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: 'Space Grotesk, sans-serif' }}>{s.val}</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{s.lbl}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

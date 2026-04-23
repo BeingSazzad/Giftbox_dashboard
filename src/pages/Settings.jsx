@@ -1,20 +1,19 @@
 import { useState, useRef } from 'react'
 import {
-  DollarSign, Phone, Bell, RefreshCw, Shield, Globe,
+  DollarSign, Phone, Bell, RefreshCw, Shield, Globe, Upload,
   Save, AlertTriangle, Clock, CheckCircle, Users, Plus, Trash2
 } from 'lucide-react'
 
 const SETTINGS_SECTIONS = [
-  { key: 'platform', label: 'Platform Defaults', icon: Globe, color: 'var(--gold)' },
-  { key: 'payments', label: 'Payment Numbers', icon: Phone, color: 'var(--green)' },
+  { key: 'profile', label: 'Admin Profile', icon: Users, color: 'var(--primary)' },
+  { key: 'security', label: 'Security', icon: Shield, color: 'var(--blue)' },
+  { key: 'password', label: 'Change Password', icon: AlertTriangle, color: 'var(--red)' },
+  { key: 'team', label: 'Team Management', icon: Users, color: 'var(--gold)' },
   { key: 'notifications', label: 'Notifications', icon: Bell, color: 'var(--accent-light)' },
-  { key: 'team', label: 'Team Management', icon: Users, color: 'var(--primary)' },
-  { key: 'security', label: 'Profile & Security', icon: Shield, color: 'var(--blue)' },
 ]
 
 export default function Settings() {
-  const [activeSection, setActiveSection] = useState('platform')
-  const [paymentNums, setPaymentNums] = useState(['+243 810 000 001', '+243 820 000 002'])
+  const [activeSection, setActiveSection] = useState('profile')
   const [adminAvatar, setAdminAvatar] = useState(null);
   const fileInputRef = useRef(null);
   const [team, setTeam] = useState([
@@ -83,58 +82,41 @@ export default function Settings() {
 
         {/* Content Area */}
         <div style={{ paddingBottom: 40 }}>
-          {activeSection === 'platform' && (
+          {activeSection === 'profile' && (
       <div className="settings-block">
         <div className="settings-block-header">
-          <Globe size={16} style={{ color: 'var(--gold)' }} />
-          Platform Defaults
+          <Users size={16} style={{ color: 'var(--primary)' }} />
+          Admin Profile
         </div>
-        <div className="settings-row">
-          <div>
-            <div className="settings-row-label">Currency</div>
-            <div className="settings-row-desc">System-wide currency display</div>
+        
+        {/* Profile Picture */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '30px 0 20px', borderBottom: '1px solid var(--border)' }}>
+          <div className="admin-avatar" style={{ width: 100, height: 100, fontSize: 32, overflow: 'hidden', marginBottom: 16 }}>
+            {adminAvatar ? <img src={adminAvatar} alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : 'AD'}
           </div>
-          <select
-            className="form-select"
-            value={currency}
-            onChange={e => setCurrency(e.target.value)}
-            style={{ width: 130 }}
-          >
-            <option value="CDF">CDF — Congolese Franc</option>
-            <option value="USD">USD — US Dollar</option>
-            <option value="EUR">EUR — Euro</option>
-          </select>
+          <button className="btn btn-outline btn-sm" onClick={() => fileInputRef.current && fileInputRef.current.click()}>
+            <Upload size={14} /> Upload New Photo
+          </button>
+          <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={e => {
+            if (e.target.files && e.target.files[0]) {
+              setAdminAvatar(URL.createObjectURL(e.target.files[0]));
+            }
+          }} />
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8 }}>JPG, GIF or PNG. Max size of 800K</div>
         </div>
-      </div>
-          )}
 
-          {activeSection === 'payments' && (
-      <div className="settings-block">
-        <div className="settings-block-header">
-          <Phone size={16} style={{ color: 'var(--green)' }} />
-          Payment Numbers
-          <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>Displayed to users for mobile money payments</span>
-        </div>
-        {paymentNums.map((num, i) => (
-          <div key={i} className="settings-row">
-            <div>
-              <div className="settings-row-label">Payment Number {i + 1}</div>
-              <div className="settings-row-desc">{i === 0 ? 'M-Pesa primary number' : 'Orange Money number'}</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <input
-                className="form-input"
-                value={num}
-                onChange={e => setPaymentNums(ns => ns.map((n, j) => j === i ? e.target.value : n))}
-                style={{ width: 200 }}
-                placeholder="+243 XXX XXX XXX"
-              />
-            </div>
+        <div style={{ padding: '32px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Full Name</label>
+            <input className="form-input" defaultValue="Main Admin" />
           </div>
-        ))}
-        <div className="settings-row" style={{ borderBottom: 'none' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-            ⚠ Changing payment numbers will update them immediately in the user app. Notify users before changing.
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label" style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Contact Number</label>
+            <input className="form-input" defaultValue="+243 81 234 5678" />
+          </div>
+          <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
+            <label className="form-label" style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Email Address <span style={{ color: 'var(--red)', textTransform: 'none', fontWeight: 500 }}>(Contact support to change)</span></label>
+            <input className="form-input" type="email" defaultValue="admin@giftbox.cd" disabled style={{ background: 'var(--bg-elevated)', opacity: 0.7, cursor: 'not-allowed' }} />
           </div>
         </div>
       </div>
@@ -212,28 +194,7 @@ export default function Settings() {
       <div className="settings-block">
         <div className="settings-block-header">
           <Shield size={16} style={{ color: 'var(--blue)' }} />
-          Security & Profile
-        </div>
-        
-        {/* Profile Picture */}
-        <div className="settings-row">
-          <div>
-            <div className="settings-row-label">Admin Profile Picture</div>
-            <div className="settings-row-desc">Update your display photo</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div className="admin-avatar" style={{ width: 50, height: 50, fontSize: 18, overflow: 'hidden' }}>
-              {adminAvatar ? <img src={adminAvatar} alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : 'AD'}
-            </div>
-            <button className="btn btn-outline btn-sm" onClick={() => fileInputRef.current && fileInputRef.current.click()}>
-              Upload New
-            </button>
-            <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={e => {
-              if (e.target.files && e.target.files[0]) {
-                setAdminAvatar(URL.createObjectURL(e.target.files[0]));
-              }
-            }} />
-          </div>
+          Security Settings
         </div>
 
         {[
@@ -248,19 +209,19 @@ export default function Settings() {
             <div className={`toggle ${toggles[s.key] ? 'on' : ''}`} onClick={() => toggleSwitch(s.key)} />
           </div>
         ))}
+      </div>
+          )}
 
-        <div className="settings-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-            <div style={{ padding: 10, background: 'var(--bg-card)', borderRadius: '50%', border: '1px solid var(--border)' }}>
-              <Shield size={18} style={{ color: 'var(--text-secondary)' }} />
-            </div>
-            <div>
-              <div className="settings-row-label" style={{ fontSize: 14 }}>Change Admin Password</div>
-              <div className="settings-row-desc">Ensure your account uses a strong, secure password. Last changed 30 days ago.</div>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 380, marginLeft: 50 }}>
+          {activeSection === 'password' && (
+      <div className="settings-block">
+        <div className="settings-block-header">
+          <AlertTriangle size={16} style={{ color: 'var(--red)' }} />
+          Change Password
+        </div>
+        <div style={{ padding: '32px' }}>
+          <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Admin Password</div>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 28 }}>Ensure your account uses a strong, secure password. Last changed 30 days ago.</div>
+          <div style={{ display: 'grid', gap: 20, maxWidth: 400 }}>
             <div className="form-group">
               <label className="form-label">Current Password</label>
               <input className="form-input" type="password" placeholder="••••••••" style={{ letterSpacing: 2 }} />
@@ -274,7 +235,7 @@ export default function Settings() {
               <label className="form-label">Confirm New Password</label>
               <input className="form-input" type="password" placeholder="••••••••" style={{ letterSpacing: 2 }} />
             </div>
-            <div style={{ marginTop: 6 }}>
+            <div style={{ marginTop: 8 }}>
               <button className="btn btn-primary">Update Password</button>
             </div>
           </div>

@@ -12,6 +12,7 @@ import UserProfile from './pages/UserProfile'
 import Support from './pages/Support'
 import CMS from './pages/CMS'
 import Settings from './pages/Settings'
+import Finance from './pages/Finance'
 import Notifications from './pages/Notifications'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="users/:id" element={<UserProfile />} />
           <Route path="support" element={<Support />} />
           <Route path="cms" element={<CMS />} />
+          <Route path="finance" element={<Finance />} />
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>

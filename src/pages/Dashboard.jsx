@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Gift, Users, Clock, CheckCircle, DollarSign, Plus,
-  Eye, Search, TrendingUp, AlertCircle, Zap, BarChart2, ArrowRight
+  Eye, Search, TrendingUp, AlertCircle, Zap, BarChart2, ArrowRight, Trophy
 } from 'lucide-react'
 import { mockLotteries, mockParticipants, mockUsers } from '../data/mockData'
 import {
@@ -68,16 +68,17 @@ const QUICK_ACTIONS = [
 export default function Dashboard() {
   const navigate = useNavigate()
 
-  const totalLotteries = mockLotteries.length;
-  const pendingDraws = mockLotteries.filter(l => l.status === 'active').length;
+  const completedDraws = mockLotteries.filter(l => l.status === 'completed').length;
+  const pendingPayments = mockParticipants.filter(p => p.status === 'pending').length;
   const ticketsSold = mockParticipants.reduce((s, p) => s + p.tickets, 0);
+  const totalRevenue = mockLotteries.reduce((s, l) => s + l.revenue, 0);
 
   const metrics = [
-    { label: 'Total Users', value: mockUsers.length.toLocaleString(), icon: Users, color: 'blue', change: '+23 this week', dir: 'up' },
-    { label: 'Total Draws', value: totalLotteries.toLocaleString(), icon: Gift, color: 'accent', change: 'All time', dir: 'up' },
-    { label: 'Pending Draws', value: pendingDraws.toLocaleString(), icon: Clock, color: 'gold', change: 'Active now', dir: 'up' },
-    { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: TrendingUp, color: 'green', change: '+18 today', dir: 'up' },
-    { label: 'Total Income', value: '2.6M CDF', icon: DollarSign, color: 'pink', change: '+180K today', dir: 'up' },
+    { label: 'Total Users', value: mockUsers.length.toLocaleString(), icon: Users, color: 'blue', change: '12%', dir: 'up' },
+    { label: 'Draws Completed', value: completedDraws.toLocaleString(), icon: Gift, color: 'accent', change: '1', dir: 'up' },
+    { label: 'Pending Payments', value: pendingPayments.toLocaleString(), icon: Clock, color: 'gold', change: pendingPayments > 0 ? 'Action needed' : 'All clear', dir: pendingPayments > 0 ? 'down' : 'up' },
+    { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: TrendingUp, color: 'green', change: '24%', dir: 'up' },
+    { label: 'Total Revenue', value: `${(totalRevenue / 1000).toFixed(0)}K CDF`, icon: DollarSign, color: 'pink', change: '18%', dir: 'up' },
   ]
 
   const nextLottery = mockLotteries.find(l => l.status === 'active')
@@ -87,8 +88,8 @@ export default function Dashboard() {
     <div>
       {/* Welcome Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(124,58,237,0.15) 100%)',
-        border: '1px solid var(--border-bright)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
         borderRadius: 'var(--radius-xl)',
         padding: '24px 28px',
         marginBottom: 28,
@@ -96,7 +97,6 @@ export default function Dashboard() {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 20,
-        backgroundImage: 'radial-gradient(ellipse at 80% 50%, rgba(124,58,237,.15) 0%, transparent 65%)',
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
@@ -104,7 +104,7 @@ export default function Dashboard() {
             <h1 style={{ fontSize: 22, fontWeight: 800 }}>Good afternoon, Admin</h1>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-            You have <strong style={{ color: 'var(--gold)' }}>3 pending payment verifications</strong> and <strong style={{ color: 'var(--accent-light)' }}>2 active lotteries</strong> running right now.
+            You have <strong style={{ color: 'var(--gold)' }}>3 pending payment verifications</strong> and the <strong style={{ color: 'var(--accent-light)' }}>Weekly Draw</strong> is running right now.
           </p>
         </div>
         {nextLottery && (
@@ -121,14 +121,20 @@ export default function Dashboard() {
           <div key={m.label} className={`metric-card ${m.color}`}>
             <div className="flex items-center justify-between">
               <div className={`metric-icon ${m.color}`}>
-                <m.icon size={20} />
+                <m.icon size={24} strokeWidth={2.5} />
               </div>
-              <div className={`metric-change ${m.dir}`}>
+              <div className={`badge badge-${m.dir === 'up' ? 'active' : 'closed'}`} style={{ padding: '6px 10px', fontSize: '12px' }}>
                 {m.dir === 'up' ? '↑' : '↓'} {m.change}
               </div>
             </div>
-            <div className="metric-value">{m.value}</div>
-            <div className="metric-label">{m.label}</div>
+            <div>
+              <div className="metric-label" style={{ fontSize: '14px', textTransform: 'none', letterSpacing: 0, fontWeight: 500, color: 'var(--text-muted)', marginBottom: '8px' }}>
+                {m.label}
+              </div>
+              <div className="metric-value" style={{ fontSize: '32px', fontFamily: 'Inter, sans-serif' }}>
+                {m.value}
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -224,8 +230,8 @@ export default function Dashboard() {
       <div style={{ marginTop: 28 }}>
         <div className="section-header">
           <div>
-            <div className="section-title">Lottery Overview</div>
-            <div className="section-sub">All active and recent lotteries</div>
+            <div className="section-title">Draws History</div>
+            <div className="section-sub">Current and past weekly draws</div>
           </div>
           <button className="btn btn-primary btn-sm" onClick={() => navigate('/lotteries')}>
             <Eye size={13} /> View All <ArrowRight size={12} />

@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Shuffle, Lock, Send, CheckCircle, Trophy } from 'lucide-react'
 import { mockLotteries, mockParticipants } from '../data/mockData'
 
-const STAGES = ['close', 'filter', 'select', 'confirm', 'publish']
-const STAGE_LABELS = ['Close Lottery', 'Filter Pool', 'Select Winner', 'Confirm Result', 'Publish']
+const STAGES = ['close', 'filter', 'select', 'confirm', 'manage']
+const STAGE_LABELS = ['Close Lottery', 'Filter Pool', 'Select Winner', 'Confirm Result', 'Manage Winner']
 
 export default function WinnerSelection() {
   const { id } = useParams()
@@ -37,21 +37,7 @@ export default function WinnerSelection() {
   const confirmWinner = () => { setLocked(true); setStage(4) }
   const publishResult = () => { setPublished(true) }
 
-  if (published) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 80, marginBottom: 16, animation: 'pulse 1.5s infinite' }}>🎉</div>
-          <h2 style={{ fontSize: 28, fontWeight: 800, color: 'var(--gold)', marginBottom: 8 }}>Winner Announced!</h2>
-          <p style={{ fontSize: 15, color: 'var(--text-muted)', marginBottom: 8 }}>{winner?.name} has been notified.</p>
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>The result has been pushed to the user app.</p>
-          <button className="btn btn-primary" onClick={() => navigate('/lotteries')}>
-            <ArrowLeft size={14} /> Back to Lotteries
-          </button>
-        </div>
-      </div>
-    )
-  }
+  // Published state is now handled within stage 4
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto' }}>
@@ -103,6 +89,7 @@ export default function WinnerSelection() {
             <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
             <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Filter Eligible Participants</h3>
             <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>Only <strong style={{ color: 'var(--green)' }}>approved</strong> participants enter the winner pool</p>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>* System auto-verifies: Age 18+ and residing in valid cities (Kinshasa, Matadi, Boma, etc.)</p>
           </div>
 
           <div className="table-wrap" style={{ marginBottom: 24 }}>
@@ -195,22 +182,46 @@ export default function WinnerSelection() {
         </div>
       )}
 
-      {/* Stage 4: Publish */}
+      {/* Stage 4: Publish & Manage */}
       {stage === 4 && winner && (
         <div className="winner-stage">
           <div style={{ fontSize: 64, marginBottom: 16 }}>📣</div>
-          <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>Publish Result</h3>
-          <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>Winner is locked:</p>
+          <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>Winner Management</h3>
+          <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 8 }}>Official Winner:</p>
           <div className="winner-name" style={{ marginBottom: 6 }}>{winner.name}</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 28 }}>{winner.city} · {winner.phone}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24 }}>{winner.city} · {winner.phone}</div>
 
-          <div style={{ background: 'rgba(16,185,129,.07)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: '14px 20px', marginBottom: 28, fontSize: 13 }}>
-            ✅ Publishing will push the announcement to the user app and notify all participants.
-          </div>
-
-          <button className="btn btn-gold btn-lg" style={{ margin: '0 auto' }} onClick={publishResult}>
-            <Send size={16} /> Publish Winner Announcement
-          </button>
+          {!published ? (
+             <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 16, border: '1px solid var(--border)' }}>
+               <div style={{ background: 'rgba(16,185,129,.1)', color: 'var(--green)', borderRadius: 12, padding: '14px 20px', marginBottom: 20, fontSize: 13, textAlign: 'left', fontWeight: 500 }}>
+                 ✅ Publishing will push the announcement to the user app and notify all participants.
+               </div>
+               <button className="btn btn-primary btn-lg" style={{ margin: '0 auto' }} onClick={publishResult}>
+                 <Send size={16} /> Publish Winner Announcement
+               </button>
+             </div>
+          ) : (
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, textAlign: 'left' }}>
+              <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: 'var(--text-primary)' }}>Post-Draw Protocol</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                 <label className="remember-check" style={{ fontSize: 14, color: 'var(--text-primary)', display: 'flex', gap: 10, cursor: 'pointer', margin: 0 }}>
+                   <input type="checkbox" style={{ width: 18, height: 18, accentColor: 'var(--primary)' }} /> 
+                   <span>Winner Contacted via WhatsApp/Phone</span>
+                 </label>
+                 <label className="remember-check" style={{ fontSize: 14, color: 'var(--text-primary)', display: 'flex', gap: 10, cursor: 'pointer', margin: 0 }}>
+                   <input type="checkbox" style={{ width: 18, height: 18, accentColor: 'var(--primary)' }} /> 
+                   <span>Winner Responded (Max 3 days)</span>
+                 </label>
+                 <label className="remember-check" style={{ fontSize: 14, color: 'var(--text-primary)', display: 'flex', gap: 10, cursor: 'pointer', margin: 0 }}>
+                   <input type="checkbox" style={{ width: 18, height: 18, accentColor: 'var(--primary)' }} /> 
+                   <span>Reward Delivered (Max 5 days)</span>
+                 </label>
+              </div>
+              <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--red)', fontWeight: 500 }}>
+                 *If winner fails to respond within 3 days, they must be disqualified and the draw repeated.
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

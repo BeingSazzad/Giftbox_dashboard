@@ -55,11 +55,9 @@ export default function CMS() {
           <div className="section-title">Content Management</div>
           <div className="section-sub">Manage all public-facing content</div>
         </div>
-        {activeSection !== 'faq' && (
-          <button className={`btn ${saved ? 'btn-success' : 'btn-primary'}`} onClick={handleSave}>
-            <Save size={14} /> {saved ? 'Saved!' : 'Save Changes'}
-          </button>
-        )}
+        <button className={`btn ${saved ? 'btn-success' : 'btn-primary'}`} onClick={handleSave}>
+          <Save size={16} /> {saved ? 'Saved!' : 'Save & Publish'}
+        </button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 22, alignItems: 'start' }}>
@@ -112,13 +110,10 @@ export default function CMS() {
 
               <div className="flex items-center justify-between mt-4">
                 <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                  {content[activeSection]?.length} characters
+                  {content[activeSection]?.length} characters · Draft saved automatically
                 </div>
                 <div className="flex gap-2">
                   <button className="btn btn-ghost btn-sm">Reset to Default</button>
-                  <button className={`btn ${saved ? 'btn-success' : 'btn-primary'} btn-sm`} onClick={handleSave}>
-                    <Save size={12} /> {saved ? '✓ Saved' : 'Save & Publish'}
-                  </button>
                 </div>
               </div>
             </div>
