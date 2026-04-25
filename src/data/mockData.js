@@ -142,7 +142,22 @@ export const mockParticipants = [
   { id: '38', name: 'Leon Ngoy', phone: '+243 822 888 999', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' },
   { id: '39', name: 'Mireille Mwamba', phone: '+243 833 999 000', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80' },
   { id: '40', name: 'Nathan Tshimanga', phone: '+243 844 000 111', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
-  { id: '41', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80' },
+  { id: '127', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80' },
+
+  // Lottery 3 (PS5 Bundle - Completed)
+  { id: '301', name: 'Jean-Pierre Mukeba', phone: '+243 812 345 678', city: 'Kinshasa', tickets: 3, status: 'approved', lotteryId: '3', proof: true, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80' },
+  { id: '302', name: 'Fatou Traore', phone: '+243 899 111 222', city: 'Goma', tickets: 1, status: 'approved', lotteryId: '3', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
+  { id: '303', name: 'Koffi Olomide', phone: '+243 888 333 444', city: 'Lubumbashi', tickets: 5, status: 'approved', lotteryId: '3', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+
+  // Lottery 7 (Smart Home - Completed)
+  { id: '701', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', tickets: 2, status: 'approved', lotteryId: '7', proof: true, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
+  { id: '702', name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', tickets: 1, status: 'approved', lotteryId: '7', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
+  { id: '703', name: 'Lina Mampuya', phone: '+243 811 222 333', city: 'Kinshasa', tickets: 4, status: 'approved', lotteryId: '7', proof: true, avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80' },
+
+  // Lottery 5 (Weekly Cash - Completed)
+  { id: '501', name: 'Grace Nzuzi', phone: '+243 860 456 789', city: 'Kinshasa', tickets: 4, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80' },
+  { id: '502', name: 'Samuel Banza', phone: '+243 870 567 890', city: 'Kolwezi', tickets: 1, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' },
+  { id: '503', name: 'Jean Bosco', phone: '+243 822 444 888', city: 'Lubumbashi', tickets: 1, status: 'pending', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
 
   // Lottery 5 (Weekly Cash Prize)
   { id: '50', name: 'Esther Kimani', phone: '+243 812 333 999', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },

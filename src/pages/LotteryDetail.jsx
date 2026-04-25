@@ -165,18 +165,18 @@ export default function LotteryDetail() {
               </button>
             )}
             {(lottery.status === 'drawing' || lottery.status === 'closed') && (
-              <button 
-                className="btn btn-gold" 
-                style={{ 
-                  justifyContent: 'center', 
-                  width: '100%', 
-                  height: 48, 
-                  fontSize: 15, 
-                  fontWeight: 700, 
+              <button
+                className="btn btn-gold"
+                style={{
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: 48,
+                  fontSize: 15,
+                  fontWeight: 700,
                   borderRadius: 14,
                   boxShadow: '0 4px 15px rgba(217,119,6,0.3)',
                   background: 'linear-gradient(135deg, #f59e0b, #d97706)'
-                }} 
+                }}
                 onClick={() => navigate(`/lotteries/${id}/winner`)}
               >
                 <Trophy size={18} /> Draw Winner(s)
@@ -201,16 +201,16 @@ export default function LotteryDetail() {
                   </div>
                 ))}
               </div>
-              <button 
-                className="btn btn-sm" 
-                style={{ 
+              <button
+                className="btn btn-sm"
+                style={{
                   marginTop: 20,
-                  width: '100%', 
-                  height: 40, 
-                  fontSize: 12, 
+                  width: '100%',
+                  height: 40,
+                  fontSize: 12,
                   fontWeight: 700,
-                  background: 'rgba(245,158,11,.1)', 
-                  color: 'var(--gold)', 
+                  background: 'rgba(245,158,11,.1)',
+                  color: 'var(--gold)',
                   border: '1px solid rgba(245,158,11,.2)',
                   display: 'flex',
                   alignItems: 'center',
@@ -232,134 +232,134 @@ export default function LotteryDetail() {
       {lottery.status !== 'scheduled' && lottery.status !== 'draft' && (
         <>
           <div className="flex items-center gap-3 mb-5">
-        <div className="tabs">
-          {['participants', 'proofs'].map(t => (
-            <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-              {t === 'proofs' && statCounts.pending > 0 && (
-                <span style={{ marginLeft: 6, background: 'var(--gold)', color: '#1a1000', borderRadius: 10, padding: '0 6px', fontSize: 10, fontWeight: 700 }}>{statCounts.pending}</span>
-              )}
-            </button>
-          ))}
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><CheckCircle size={13} /> {statCounts.approved} approved</span>
-          <span style={{ color: 'var(--gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={13} /> {statCounts.pending} pending</span>
-          <span style={{ color: 'var(--red)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><XCircle size={13} /> {statCounts.rejected} rejected</span>
-        </div>
-      </div>
-
-      {/* Tab: Participants */}
-      {tab === 'participants' && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>City</th>
-                <th>Total Paid</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {participants.map(p => (
-                <tr key={p.id}>
-                  <td className="td-primary">{p.name}</td>
-                  <td>{p.phone}</td>
-                  <td>{p.city}</td>
-                  <td>{lottery.ticketPrice.toLocaleString()} CDF</td>
-                  <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
-                </tr>
+            <div className="tabs">
+              {['participants', 'proofs'].map(t => (
+                <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                  {t === 'proofs' && statCounts.pending > 0 && (
+                    <span style={{ marginLeft: 6, background: 'var(--gold)', color: '#1a1000', borderRadius: 10, padding: '0 6px', fontSize: 10, fontWeight: 700 }}>{statCounts.pending}</span>
+                  )}
+                </button>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </div>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)' }}>
+              <span style={{ color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><CheckCircle size={13} /> {statCounts.approved} approved</span>
+              <span style={{ color: 'var(--gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={13} /> {statCounts.pending} pending</span>
+              <span style={{ color: 'var(--red)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><XCircle size={13} /> {statCounts.rejected} rejected</span>
+            </div>
+          </div>
 
-      {/* Tab: Payment Proofs */}
-      {tab === 'proofs' && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th style={{ width: '35%' }}>Sender</th>
-                <th style={{ width: '20%' }}>Amount</th>
-                <th style={{ width: '15%' }}>Proof</th>
-                <th style={{ width: '15%' }}>Status</th>
-                <th style={{ width: '15%', textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {participants.filter(p => p.proof || p.status === 'pending').map(p => (
-                <tr key={p.id}>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
-                      <div>
-                        <div style={{ fontWeight: 700 }}>{p.name}</div>
-                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.phone}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
-                  <td>
-                    <div 
-                      onClick={() => setViewProof(p)} 
-                      style={{ 
-                        width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)'
-                      }}
-                    >
-                      <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <div 
-                        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', opacity: 0, transition: 'var(--transition)' }} 
-                        onMouseOver={e => e.currentTarget.style.opacity = 1} 
-                        onMouseOut={e => e.currentTarget.style.opacity = 0}
-                      >
-                        <Eye size={12} />
-                      </div>
-                    </div>
-                  </td>
-                  <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
-                      {p.status === 'pending' ? (
-                        <>
-                          <button 
-                            className="btn" 
-                            style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(16,185,129,.1)', color: 'var(--green)', border: '1px solid rgba(16,185,129,.2)' }} 
-                            onClick={() => approveP(p.id)}
-                            title="Approve"
-                          >
-                            <CheckCircle size={14} style={{ marginRight: 4 }} /> Approve
-                          </button>
-                          <button 
-                            className="btn" 
-                            style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(239,68,68,.1)', color: 'var(--red)', border: '1px solid rgba(239,68,68,.2)' }} 
-                            onClick={() => setRejectModal(p.id)}
-                            title="Reject"
-                          >
-                            <X size={14} style={{ marginRight: 4 }} /> Reject
-                          </button>
-                        </>
-                      ) : (
-                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Reviewed</span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {participants.filter(p => p.proof || p.status === 'pending').length === 0 && (
-            <div className="empty-state">
-              <div className="empty-icon"><FileText size={48} style={{ opacity: 0.2 }} /></div>
-              <div className="empty-title">No pending proofs</div>
-              <div className="empty-text">All payment proofs have been reviewed.</div>
+          {/* Tab: Participants */}
+          {tab === 'participants' && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>Total Paid</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {participants.map(p => (
+                    <tr key={p.id}>
+                      <td className="td-primary">{p.name}</td>
+                      <td>{p.phone}</td>
+                      <td>{p.city}</td>
+                      <td>{lottery.ticketPrice.toLocaleString()} CDF</td>
+                      <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-        </div>
-      )}
+
+          {/* Tab: Payment Proofs */}
+          {tab === 'proofs' && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style={{ width: '35%' }}>Sender</th>
+                    <th style={{ width: '20%' }}>Amount</th>
+                    <th style={{ width: '15%' }}>Proof</th>
+                    <th style={{ width: '15%' }}>Status</th>
+                    <th style={{ width: '15%', textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {participants.filter(p => p.proof || p.status === 'pending').map(p => (
+                    <tr key={p.id}>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
+                          <div>
+                            <div style={{ fontWeight: 700 }}>{p.name}</div>
+                            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.phone}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
+                      <td>
+                        <div
+                          onClick={() => setViewProof(p)}
+                          style={{
+                            width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)'
+                          }}
+                        >
+                          <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <div
+                            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', opacity: 0, transition: 'var(--transition)' }}
+                            onMouseOver={e => e.currentTarget.style.opacity = 1}
+                            onMouseOut={e => e.currentTarget.style.opacity = 0}
+                          >
+                            <Eye size={12} />
+                          </div>
+                        </div>
+                      </td>
+                      <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                          {p.status === 'pending' ? (
+                            <>
+                              <button
+                                className="btn"
+                                style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(16,185,129,.1)', color: 'var(--green)', border: '1px solid rgba(16,185,129,.2)' }}
+                                onClick={() => approveP(p.id)}
+                                title="Approve"
+                              >
+                                <CheckCircle size={14} style={{ marginRight: 4 }} /> Approve
+                              </button>
+                              <button
+                                className="btn"
+                                style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(239,68,68,.1)', color: 'var(--red)', border: '1px solid rgba(239,68,68,.2)' }}
+                                onClick={() => setRejectModal(p.id)}
+                                title="Reject"
+                              >
+                                <X size={14} style={{ marginRight: 4 }} /> Reject
+                              </button>
+                            </>
+                          ) : (
+                            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Reviewed</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {participants.filter(p => p.proof || p.status === 'pending').length === 0 && (
+                <div className="empty-state">
+                  <div className="empty-icon"><FileText size={48} style={{ opacity: 0.2 }} /></div>
+                  <div className="empty-title">No pending proofs</div>
+                  <div className="empty-text">All payment proofs have been reviewed.</div>
+                </div>
+              )}
+            </div>
+          )}
         </>
       )}
 
