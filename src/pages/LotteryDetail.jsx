@@ -194,9 +194,13 @@ export default function LotteryDetail() {
                 {lottery.winners.map((w, idx) => (
                   <div key={idx} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <img src={w.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--gold)' }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{w.name}</div>
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{w.city}</div>
+                    <div>
+                      <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 15 }}>{w.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', gap: 8 }}>
+                        <span>{w.phone}</span>
+                        <span style={{ opacity: 0.5 }}>•</span>
+                        <span>{w.city}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
