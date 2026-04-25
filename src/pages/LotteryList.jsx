@@ -7,7 +7,7 @@ const FILTERS = ['All', 'active', 'scheduled', 'closed', 'draft']
 
 export default function LotteryList() {
   const navigate = useNavigate()
-  const [filter, setFilter] = useState('All')
+  const [filter, setFilter] = useState('active')
   const [activeTab, setActiveTab] = useState(new URLSearchParams(window.location.search).get('tab') === 'history' ? 'history' : 'management')
   const [search, setSearch] = useState('')
 

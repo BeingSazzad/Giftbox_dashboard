@@ -155,8 +155,8 @@ function StepPricing({ form, update }) {
       {/* Revenue preview */}
       <div style={{ background: 'rgba(16,185,129,.07)', border: '1px solid rgba(16,185,129,.2)', borderRadius: 12, padding: '16px 20px' }}>
         <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, fontWeight: 600 }}>Revenue Projection</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-          {[100, 250, 500].map(n => (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          {[100, 250].map(n => (
             <div key={n} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)', fontFamily: "'Space Grotesk',sans-serif" }}>
                 {(n * form.ticketPrice).toLocaleString()}

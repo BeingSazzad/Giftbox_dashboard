@@ -24,13 +24,15 @@ export default function UserProfile() {
     mockParticipants.find(mp => mp.name === user.name)?.lotteryId === p.lotteryId && p.name === user.name
   )
 
-  const activityLog = [
-    { text: `Registered account`, time: user.joined, icon: Users },
-    { text: 'Participated in iPhone 15 Pro Max lottery', time: '2026-04-10', icon: Gift },
-    { text: 'Uploaded payment proof', time: '2026-04-10', icon: CreditCard },
-    { text: 'Payment approved by admin', time: '2026-04-11', icon: CheckCircle },
-    { text: 'Participated in Samsung TV lottery', time: '2026-03-20', icon: Gift },
-  ]
+  const calculateAge = (dob) => {
+    if (!dob) return 'N/A'
+    const birthDate = new Date(dob)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--
+    return age
+  }
 
   return (
     <div>
@@ -39,18 +41,16 @@ export default function UserProfile() {
       </button>
 
       {/* Profile Header */}
-      {/* Profile Header Card */}
       <div className="card" style={{ padding: '32px', marginBottom: 24, position: 'relative', overflow: 'hidden' }}>
-        {/* Background Accent */}
         <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '100%', background: 'linear-gradient(225deg, var(--primary-subtle) 0%, transparent 70%)', zIndex: 0 }} />
-        
+
         <div style={{ display: 'flex', gap: 32, alignItems: 'center', position: 'relative', zIndex: 1 }}>
-          <img 
-            src={user.avatar} 
-            alt={user.name} 
-            style={{ width: 100, height: 100, borderRadius: 'var(--radius-lg)', objectFit: 'cover', border: '4px solid var(--bg-page)', boxShadow: 'var(--shadow-card)' }} 
+          <img
+            src={user.avatar}
+            alt={user.name}
+            style={{ width: 100, height: 100, borderRadius: 'var(--radius-lg)', objectFit: 'cover', border: '4px solid var(--bg-page)', boxShadow: 'var(--shadow-card)' }}
           />
-          
+
           <div style={{ flex: 1 }}>
             <div className="flex items-center gap-3 mb-2">
               <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>{user.name}</h1>
@@ -73,37 +73,39 @@ export default function UserProfile() {
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <Activity size={14} />
+                  <Trophy size={14} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email Address</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.email || 'user@giftbox.cd'}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Age Verification</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: calculateAge(user.dob) < 18 ? 'var(--red)' : 'var(--text-primary)' }}>
+                    {calculateAge(user.dob)} Years Old {calculateAge(user.dob) < 18 && ' (Underage)'}
+                  </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <RotateCcw size={14} />
+                  <Users size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Date of Birth</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.dob || 'N/A'}</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <Activity size={14} />
                 </div>
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>City / Location</div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.city}</div>
                 </div>
               </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <Activity size={14} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Member Since</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.joined}</div>
-                </div>
-              </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div>
             <button
               className={`btn ${suspended || user.status === 'suspended' ? 'btn-success' : 'btn-danger'}`}
               onClick={() => setSuspended(s => !s)}
@@ -111,9 +113,6 @@ export default function UserProfile() {
             >
               <UserX size={15} />
               {suspended || user.status === 'suspended' ? 'Unsuspend' : 'Suspend User'}
-            </button>
-            <button className="btn btn-ghost">
-              <RotateCcw size={15} /> Reset Auth
             </button>
           </div>
         </div>
@@ -142,9 +141,7 @@ export default function UserProfile() {
       <div className="tabs mb-5">
         {[
           { key: 'history', label: 'Participation History', icon: Gift },
-          { key: 'payments', label: 'Payment History', icon: CreditCard },
           { key: 'wins', label: 'Win History', icon: Trophy },
-          { key: 'activity', label: 'Activity Log', icon: Activity },
         ].map(t => (
           <button key={t.key} className={`tab-btn ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}>
             {t.label}
@@ -174,33 +171,6 @@ export default function UserProfile() {
         </div>
       )}
 
-      {/* Payment History */}
-      {tab === 'payments' && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Transaction Ref</th><th>Lottery</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-              {[
-                { ref: 'TXN-20260410-001', lottery: 'iPhone 15 Pro Max', amount: 5000, method: 'M-Pesa', status: 'approved', date: '2026-04-10' },
-                { ref: 'TXN-20260320-014', lottery: 'Samsung TV', amount: 2500, method: 'Airtel Money', status: 'approved', date: '2026-03-20' },
-                { ref: 'TXN-20260215-007', lottery: 'PS5 Bundle', amount: 7500, method: 'M-Pesa', status: 'rejected', date: '2026-02-15' },
-              ].map(t => (
-                <tr key={t.ref}>
-                  <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>{t.ref}</td>
-                  <td className="td-primary">{t.lottery}</td>
-                  <td style={{ fontWeight: 700 }}>{t.amount.toLocaleString()} CDF</td>
-                  <td style={{ color: 'var(--text-muted)' }}>{t.method}</td>
-                  <td><span className={`badge badge-${t.status}`}>{t.status}</span></td>
-                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
       {/* Win History */}
       {tab === 'wins' && (
         <div>
@@ -217,23 +187,6 @@ export default function UserProfile() {
               <div className="empty-text">This user hasn't won any lotteries yet.</div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* Activity Log */}
-      {tab === 'activity' && (
-        <div className="card" style={{ padding: '6px 20px' }}>
-          {activityLog.map((a, i) => (
-            <div key={i} className="activity-item">
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)' }}>
-                <a.icon size={14} />
-              </div>
-              <div className="activity-detail">
-                <div className="activity-text">{a.text}</div>
-                <div className="activity-time">{a.time}</div>
-              </div>
-            </div>
-          ))}
         </div>
       )}
     </div>

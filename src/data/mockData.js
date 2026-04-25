@@ -233,16 +233,16 @@ export const mockParticipants = [
 ]
 
 export const mockUsers = [
-  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', status: 'active', joined: '2026-01-15', tickets: 12, wins: 0, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
-  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', status: 'active', joined: '2026-02-03', tickets: 5, wins: 0, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
-  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', status: 'active', joined: '2026-01-28', tickets: 8, wins: 1, avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80' },
-  { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', status: 'suspended', joined: '2026-03-10', tickets: 2, wins: 0, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
-  { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', status: 'active', joined: '2026-02-20', tickets: 9, wins: 0, avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150&q=80' },
-  { id: '6', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', status: 'active', joined: '2026-03-01', tickets: 6, wins: 0, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80' },
-  { id: '7', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', status: 'active', joined: '2026-01-05', tickets: 14, wins: 1, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
-  { id: '8', name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', status: 'active', joined: '2026-02-14', tickets: 20, wins: 0, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
-  { id: '9', name: 'Grace Nzuzi', phone: '+243 860 456 789', city: 'Kinshasa', status: 'active', joined: '2026-03-22', tickets: 3, wins: 0, avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80' },
-  { id: '10', name: 'Samuel Banza', phone: '+243 870 567 890', city: 'Kolwezi', status: 'active', joined: '2026-04-01', tickets: 1, wins: 0, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' },
+  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', status: 'active', joined: '2026-01-15', tickets: 12, wins: 0, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80', dob: '1995-05-12' },
+  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', status: 'active', joined: '2026-02-03', tickets: 5, wins: 0, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80', dob: '1988-11-20' },
+  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', status: 'active', joined: '2026-01-28', tickets: 8, wins: 1, avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80', dob: '2001-03-15' },
+  { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', status: 'suspended', joined: '2026-03-10', tickets: 2, wins: 0, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80', dob: '1992-07-08' },
+  { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', status: 'active', joined: '2026-02-20', tickets: 9, wins: 0, avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150&q=80', dob: '1990-12-30' },
+  { id: '6', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', status: 'active', joined: '2026-03-01', tickets: 6, wins: 0, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80', dob: '1985-09-14' },
+  { id: '7', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', status: 'active', joined: '2026-01-05', tickets: 14, wins: 1, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80', dob: '1998-02-22' },
+  { id: '8', name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', status: 'active', joined: '2026-02-14', tickets: 20, wins: 0, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80', dob: '1993-06-18' },
+  { id: '9', name: 'Grace Nzuzi', phone: '+243 860 456 789', city: 'Kinshasa', status: 'active', joined: '2026-03-22', tickets: 3, wins: 0, avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80', dob: '2000-01-01' },
+  { id: '10', name: 'Samuel Banza', phone: '+243 870 567 890', city: 'Kolwezi', status: 'active', joined: '2026-04-01', tickets: 1, wins: 0, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80', dob: '1996-10-10' },
 ]
 
 export const mockMessages = [
