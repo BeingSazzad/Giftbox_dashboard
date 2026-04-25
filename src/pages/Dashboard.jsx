@@ -92,7 +92,7 @@ export default function Dashboard() {
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius-xl)',
         padding: '24px 28px',
-        marginBottom: 28,
+        marginBottom: 20,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
