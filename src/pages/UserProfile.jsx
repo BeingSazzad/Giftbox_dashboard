@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, UserX, RotateCcw, Activity, Gift, CreditCard, Trophy, Users, CheckCircle } from 'lucide-react'
+import { ArrowLeft, UserX, RotateCcw, Activity, Gift, CreditCard, Trophy, Users, CheckCircle, FileText } from 'lucide-react'
 import { mockUsers, mockParticipants, mockLotteries } from '../data/mockData'
 
 export default function UserProfile() {
