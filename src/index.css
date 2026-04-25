@@ -237,7 +237,7 @@ img { max-width: 100%; }
 }
 
 /* ===== METRIC CARDS ===== */
-.metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
 .metric-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
