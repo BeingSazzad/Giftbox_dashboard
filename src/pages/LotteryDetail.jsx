@@ -31,8 +31,14 @@ export default function LotteryDetail() {
   const [viewProof, setViewProof] = useState(null)
   const [rejectReason, setRejectReason] = useState('')
 
-  const lottery = mockLotteries.find(l => l.id === id)
+  const [lottery, setLottery] = useState(mockLotteries.find(l => l.id === id))
   const { d, h, m, s } = useCountdown(lottery?.endDate || '')
+
+  const endLottery = () => {
+    if (window.confirm('Are you sure you want to end this lottery immediately?')) {
+      setLottery({ ...lottery, status: 'drawing' })
+    }
+  }
 
   if (!lottery) return (
     <div className="empty-state">
@@ -73,54 +79,57 @@ export default function LotteryDetail() {
         gap: 24,
         alignItems: 'start',
       }}>
-        <div>
-          <div className="flex items-center gap-3 mb-3">
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="flex items-center gap-3 mb-4">
             <span className={`badge badge-${lottery.status}`}>{lottery.status}</span>
             <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>ID #{lottery.id}</span>
           </div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>{lottery.title}</h1>
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 20, maxWidth: 500 }}>{lottery.description}</p>
 
-          {/* Prize row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <div style={{ width: 52, height: 52, background: 'rgba(245,158,11,.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)', border: '1px solid rgba(245,158,11,.25)' }}>
-              <Trophy size={24} />
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: .5, fontWeight: 600 }}>Prize</div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>{lottery.prize.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{lottery.prize.description}</div>
-            </div>
+          {/* Prize Image Thumbnail */}
+          <div style={{ marginBottom: 20 }}>
+            {lottery.prize?.image ? (
+              <img src={lottery.prize.image} alt={lottery.title} style={{ width: 120, height: 120, borderRadius: 24, objectFit: 'cover', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-card)' }} />
+            ) : (
+              <div style={{ width: 120, height: 120, background: 'rgba(245,158,11,.15)', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)', border: '1px solid rgba(245,158,11,.25)' }}>
+                <Trophy size={48} />
+              </div>
+            )}
           </div>
 
-          {/* Stats row */}
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            {[
-              { label: 'Participants', value: lottery.participants, icon: Users },
-              { label: 'Pending', value: lottery.pendingApprovals, icon: Clock, alert: lottery.pendingApprovals > 0 },
-              { label: 'Ticket Price', value: `${lottery.ticketPrice.toLocaleString()} CDF`, icon: Tag },
-              { label: 'Revenue', value: `${lottery.revenue.toLocaleString()} CDF`, icon: TrendingUp },
-            ].map(s => (
-              <div key={s.label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 16px', minWidth: 120 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: .5, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <s.icon size={14} style={{ color: s.alert ? 'var(--gold)' : 'var(--text-muted)' }} />
-                  {s.label}
+          {/* Text and Stats */}
+          <div>
+            <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 8px 0' }}>{lottery.title}</h1>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 20, maxWidth: 500, lineHeight: 1.5 }}>{lottery.description}</p>
+
+            {/* Stats row */}
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              {[
+                { label: 'Participants', value: lottery.participants, icon: Users },
+                { label: 'Ticket Price', value: `${lottery.ticketPrice.toLocaleString()} CDF`, icon: Tag },
+                { label: 'Revenue', value: `${lottery.revenue.toLocaleString()} CDF`, icon: TrendingUp },
+              ].map(s => (
+                <div key={s.label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 16px', minWidth: 120 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: .5, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <s.icon size={14} style={{ color: 'var(--text-muted)' }} />
+                    {s.label}
+                  </div>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)', fontFamily: "'Space Grotesk',sans-serif" }}>{s.value}</div>
                 </div>
-                <div style={{ fontWeight: 800, fontSize: 16, color: s.alert ? 'var(--gold)' : 'var(--text-primary)', fontFamily: "'Space Grotesk',sans-serif" }}>{s.value}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Right: Countdown + Actions */}
-        {/* Right: Countdown + Actions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-end', minWidth: 260 }}>
-          
+
           {/* Action Row */}
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-outline btn-sm" onClick={() => navigate('/lotteries/create')}>
-              <Edit size={13} /> Edit
-            </button>
+            {lottery.status !== 'completed' && (
+              <button className="btn btn-outline btn-sm" onClick={() => navigate('/lotteries/create')}>
+                <Edit size={13} /> Edit
+              </button>
+            )}
             {lottery.status === 'active' && (
               <button className="btn btn-outline btn-sm">
                 <Pause size={13} /> Pause
@@ -137,7 +146,7 @@ export default function LotteryDetail() {
                   {[['d', d], ['h', h], ['m', m], ['s', s]].map(([lbl, val], i) => (
                     <div key={lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div className="countdown-seg">
-                        <div className="countdown-num">{String(val).padStart(2,'0')}</div>
+                        <div className="countdown-num">{String(val).padStart(2, '0')}</div>
                         <div className="countdown-label">{lbl}</div>
                       </div>
                       {i < 3 && <div className="countdown-sep">:</div>}
@@ -149,38 +158,80 @@ export default function LotteryDetail() {
           )}
 
           {/* Primary Actions */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
             {lottery.status === 'active' && (
-              <button className="btn btn-danger btn-sm" style={{ justifyContent: 'center', width: '100%', padding: '10px 0' }}>
-                <X size={14} /> End Lottery Now
+              <button className="btn btn-danger" style={{ justifyContent: 'center', width: '100%', height: 44, borderRadius: 12 }} onClick={endLottery}>
+                <XCircle size={16} /> End Lottery Now
               </button>
             )}
             {lottery.status === 'drawing' && (
-              <button className="btn btn-gold btn-sm" style={{ justifyContent: 'center', width: '100%', padding: '12px 0', fontSize: 14 }} onClick={() => navigate(`/lotteries/${id}/winner`)}>
-                <Trophy size={16} /> Draw Winner
+              <button 
+                className="btn btn-gold" 
+                style={{ 
+                  justifyContent: 'center', 
+                  width: '100%', 
+                  height: 48, 
+                  fontSize: 15, 
+                  fontWeight: 700, 
+                  borderRadius: 14,
+                  boxShadow: '0 4px 15px rgba(217,119,6,0.3)',
+                  background: 'linear-gradient(135deg, #f59e0b, #d97706)'
+                }} 
+                onClick={() => navigate(`/lotteries/${id}/winner`)}
+              >
+                <Trophy size={18} /> Draw Winner(s)
               </button>
-            )}
-            {lottery.status === 'completed' && (
-               <div style={{ background: 'rgba(16,185,129,.1)', color: 'var(--green)', padding: '12px', borderRadius: 8, textAlign: 'center', fontWeight: 700, width: '100%' }}>
-                 <CheckCircle size={16} style={{ display: 'inline', marginBottom: -3 }} /> Winner Drawn
-               </div>
             )}
           </div>
 
-          {/* Winner Badge */}
-          {lottery.status === 'completed' && lottery.winner && (
-            <div style={{ background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.25)', borderRadius: 12, padding: '14px', textAlign: 'center', width: '100%' }}>
-              <div style={{ color: 'var(--gold)', marginBottom: 6, display: 'flex', justifyContent: 'center' }}><Trophy size={28} /></div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>WINNER</div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--gold)' }}>{lottery.winner.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{lottery.winner.city}</div>
+          {/* Winners Section */}
+          {lottery.status === 'completed' && lottery.winners && lottery.winners.length > 0 && (
+            <div style={{ background: 'rgba(245,158,11,.05)', border: '1px solid rgba(245,158,11,.2)', borderRadius: 16, padding: '16px', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--gold)', fontWeight: 800, fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
+                <Trophy size={14} /> {lottery.winners.length} {lottery.winners.length > 1 ? 'Winners' : 'Winner'} Drawn
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {lottery.winners.map((w, idx) => (
+                  <div key={idx} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <img src={w.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--gold)' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{w.name}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{w.city}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button 
+                className="btn btn-sm" 
+                style={{ 
+                  marginTop: 20,
+                  width: '100%', 
+                  height: 40, 
+                  fontSize: 12, 
+                  fontWeight: 700,
+                  background: 'rgba(245,158,11,.1)', 
+                  color: 'var(--gold)', 
+                  border: '1px solid rgba(245,158,11,.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  borderRadius: 12,
+                  transition: 'var(--transition)'
+                }}
+                onClick={() => navigate(`/lotteries/${id}/winner`)}
+              >
+                <RotateCcw size={14} /> Re-Draw / Change Winners
+              </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-3 mb-5">
+      {/* Tabs & Content */}
+      {lottery.status !== 'scheduled' && lottery.status !== 'draft' && (
+        <>
+          <div className="flex items-center gap-3 mb-5">
         <div className="tabs">
           {['participants', 'proofs'].map(t => (
             <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
@@ -204,10 +255,9 @@ export default function LotteryDetail() {
           <table>
             <thead>
               <tr>
-                <th>User</th>
+                <th>Name</th>
                 <th>Phone</th>
                 <th>City</th>
-                <th>Tickets</th>
                 <th>Total Paid</th>
                 <th>Status</th>
               </tr>
@@ -218,7 +268,6 @@ export default function LotteryDetail() {
                   <td className="td-primary">{p.name}</td>
                   <td>{p.phone}</td>
                   <td>{p.city}</td>
-                  <td style={{ fontWeight: 700, color: 'var(--accent-light)' }}>1 Ticket</td>
                   <td>{lottery.ticketPrice.toLocaleString()} CDF</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                 </tr>
@@ -234,12 +283,11 @@ export default function LotteryDetail() {
           <table>
             <thead>
               <tr>
-                <th>Sender</th>
-                <th>Method</th>
-                <th>Reference</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+                <th style={{ width: '35%' }}>Sender</th>
+                <th style={{ width: '20%' }}>Amount</th>
+                <th style={{ width: '15%' }}>Proof</th>
+                <th style={{ width: '15%' }}>Status</th>
+                <th style={{ width: '15%', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -254,31 +302,48 @@ export default function LotteryDetail() {
                       </div>
                     </div>
                   </td>
+                  <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600 }}>
-                      <div style={{ width: 24, height: 24, borderRadius: 6, background: p.id % 3 === 0 ? '#FF6B0015' : p.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.id % 3 === 0 ? '#FF6B00' : p.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
-                        <Smartphone size={14} />
+                    <div 
+                      onClick={() => setViewProof(p)} 
+                      style={{ 
+                        width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)'
+                      }}
+                    >
+                      <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div 
+                        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', opacity: 0, transition: 'var(--transition)' }} 
+                        onMouseOver={e => e.currentTarget.style.opacity = 1} 
+                        onMouseOut={e => e.currentTarget.style.opacity = 0}
+                      >
+                        <Eye size={12} />
                       </div>
-                      {p.id % 3 === 0 ? 'Orange' : p.id % 3 === 1 ? 'M-Pesa' : 'Airtel'}
                     </div>
                   </td>
-                  <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>TXN-{Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
-                  <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                   <td>
-                    <div className="flex items-center justify-end gap-2">
-                      <button className="btn btn-ghost btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => setViewProof(p)}>
-                        <Eye size={13} /> View Proof
-                      </button>
-                      {p.status === 'pending' && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                      {p.status === 'pending' ? (
                         <>
-                          <button className="btn btn-primary btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => approveP(p.id)}>
-                            <CheckCircle size={13} /> Approve
+                          <button 
+                            className="btn" 
+                            style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(16,185,129,.1)', color: 'var(--green)', border: '1px solid rgba(16,185,129,.2)' }} 
+                            onClick={() => approveP(p.id)}
+                            title="Approve"
+                          >
+                            <CheckCircle size={14} style={{ marginRight: 4 }} /> Approve
                           </button>
-                          <button className="btn btn-danger btn-sm" style={{ height: 32, padding: '0 12px' }} onClick={() => setRejectModal(p.id)}>
-                            <X size={13} /> Reject
+                          <button 
+                            className="btn" 
+                            style={{ padding: '6px 12px', fontSize: 13, height: 'auto', background: 'rgba(239,68,68,.1)', color: 'var(--red)', border: '1px solid rgba(239,68,68,.2)' }} 
+                            onClick={() => setRejectModal(p.id)}
+                            title="Reject"
+                          >
+                            <X size={14} style={{ marginRight: 4 }} /> Reject
                           </button>
                         </>
+                      ) : (
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Reviewed</span>
                       )}
                     </div>
                   </td>
@@ -295,6 +360,8 @@ export default function LotteryDetail() {
           )}
         </div>
       )}
+        </>
+      )}
 
       {/* View Proof Modal */}
       {viewProof && (
@@ -305,31 +372,21 @@ export default function LotteryDetail() {
               <button className="modal-close" onClick={() => setViewProof(null)}><X size={14} /></button>
             </div>
             <div className="modal-body" style={{ textAlign: 'center' }}>
-              <img 
-                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=800" 
-                alt="Payment Proof" 
-                style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }} 
+              <img
+                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=800"
+                alt="Payment Proof"
+                style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}
               />
               <div style={{ marginTop: 20, padding: 18, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Transaction Ref</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace' }}>TXN-3829482394</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Date Uploaded</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Apr 23, 14:22</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Paid</div>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Expected</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
                   </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border)' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 8, background: viewProof.id % 3 === 0 ? '#FF6B0015' : viewProof.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: viewProof.id % 3 === 0 ? '#FF6B00' : viewProof.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
-                    <Smartphone size={18} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 12, fontWeight: 700 }}>{viewProof.id % 3 === 0 ? 'Orange Money' : viewProof.id % 3 === 1 ? 'M-Pesa (Vodacom)' : 'Airtel Money'}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Submitted via mobile wallet</div>
-                  </div>
-                  <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>Apr 23, 14:22</div>
                 </div>
               </div>
             </div>
@@ -359,8 +416,8 @@ export default function LotteryDetail() {
               <label className="remember-check" style={{ padding: '12px 16px', background: 'rgba(239,68,68,.05)', border: '1px solid rgba(239,68,68,.2)', borderRadius: 8, color: 'var(--red)', fontWeight: 600, alignItems: 'flex-start', display: 'flex', gap: 10, cursor: 'pointer' }}>
                 <input type="checkbox" style={{ marginTop: 2, accentColor: 'var(--red)' }} />
                 <span>
-                   <div style={{ marginBottom: 4, color: 'var(--red)' }}>Fraudulent Proof — Suspend Account</div>
-                   <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>Per T&C, false or fraudulent proof results in permanent account suspension.</div>
+                  <div style={{ marginBottom: 4, color: 'var(--red)' }}>Fraudulent Proof — Suspend Account</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 400 }}>Per T&C, false or fraudulent proof results in permanent account suspension.</div>
                 </span>
               </label>
             </div>

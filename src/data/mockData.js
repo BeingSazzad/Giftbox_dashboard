@@ -5,7 +5,7 @@ export const mockLotteries = [
     title: 'iPhone 15 Pro Max Giveaway',
     description: 'Win the latest iPhone 15 Pro Max — 256GB, Titanium Black. The ultimate prize for tech lovers!',
     banner: null,
-    prize: { name: 'iPhone 15 Pro Max', description: '256GB Titanium Black', image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=800&q=80' },
+    prize: { name: 'iPhone 15 Pro Max', description: '256GB Titanium Black', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&q=80' },
     ticketPrice: 2500,
     startDate: '2026-04-01',
     endDate: '2026-05-15',
@@ -41,7 +41,7 @@ export const mockLotteries = [
     participants: 480,
     pendingApprovals: 0,
     revenue: 1200000,
-    winner: { name: 'Jean-Pierre Mukeba', phone: '+243 812 345 678', city: 'Kinshasa' },
+    winners: [{ name: 'Jean-Pierre Mukeba', phone: '+243 812 345 678', city: 'Kinshasa', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80' }],
   },
   {
     id: '4',
@@ -66,22 +66,73 @@ export const mockLotteries = [
     ticketPrice: 1000,
     startDate: '2026-03-20',
     endDate: '2026-03-27',
-    status: 'drawing',
+    status: 'completed',
     participants: 412,
-    pendingApprovals: 2,
+    pendingApprovals: 0,
     revenue: 412000,
+    winners: [
+      { name: 'Grace Nzuzi', phone: '+243 860 456 789', city: 'Kinshasa', avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80' },
+      { name: 'Samuel Banza', phone: '+243 870 567 890', city: 'Kolwezi', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' }
+    ],
+  },
+  {
+    id: '6',
+    title: 'Gaming Laptop Giveaway',
+    description: 'The ultimate gaming machine. M-Series chip with 32GB RAM.',
+    banner: null,
+    prize: { name: 'Gaming Laptop', description: 'M3 Pro, 32GB, 1TB', image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&q=80' },
+    ticketPrice: 5000,
+    startDate: '2026-04-10',
+    endDate: '2026-04-20',
+    status: 'drawing',
+    participants: 124,
+    pendingApprovals: 3,
+    revenue: 620000,
   },
 ]
 
 export const mockParticipants = [
-  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', tickets: 3, status: 'approved', lotteryId: '1', avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
-  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', tickets: 1, status: 'pending', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
-  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '1', avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80' },
-  { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', tickets: 1, status: 'pending', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
-  { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', tickets: 4, status: 'rejected', lotteryId: '1', avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150&q=80' },
-  { id: '6', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', tickets: 2, status: 'pending', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80' },
-  { id: '7', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', tickets: 1, status: 'approved', lotteryId: '2', avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
-  { id: '8', name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', tickets: 5, status: 'approved', lotteryId: '2', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
+  // Lottery 1
+  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', tickets: 3, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
+  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
+  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
+  { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+  { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', tickets: 4, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80' },
+  { id: '101', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
+  { id: '102', name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
+  { id: '103', name: 'Grace Nzuzi', phone: '+243 860 456 789', city: 'Kinshasa', tickets: 4, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&q=80' },
+  { id: '104', name: 'Samuel Banza', phone: '+243 870 567 890', city: 'Kolwezi', tickets: 1, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' },
+  { id: '105', name: 'Jean-Pierre Mukeba', phone: '+243 812 345 678', city: 'Kinshasa', tickets: 3, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80' },
+  { id: '106', name: 'Alice Mutombo', phone: '+243 890 123 123', city: 'Lubumbashi', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80' },
+  { id: '107', name: 'Fiston Ndaye', phone: '+243 850 999 888', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+  { id: '108', name: 'Marie Lwamba', phone: '+243 810 555 444', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80' },
+  { id: '109', name: 'Moise Katumbi', phone: '+243 840 777 333', city: 'Lubumbashi', tickets: 5, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=150&q=80' },
+  { id: '110', name: 'Sarah Banza', phone: '+243 820 111 555', city: 'Kolwezi', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
+
+  // Lottery 6
+  { id: '27', name: 'Alain Kabila', phone: '+243 811 111 222', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80' },
+  { id: '28', name: 'Blandine Mwamba', phone: '+243 822 222 333', city: 'Lubumbashi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80' },
+  { id: '29', name: 'Clement Tshimanga', phone: '+243 833 333 444', city: 'Goma', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+  { id: '30', name: 'Dada Lukusa', phone: '+243 844 444 555', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
+  { id: '31', name: 'Etienne Kabuya', phone: '+243 855 555 666', city: 'Matadi', tickets: 5, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
+  { id: '32', name: 'Fabrice Ngoy', phone: '+243 812 222 333', city: 'Lubumbashi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
+  { id: '33', name: 'Gisele Mwamba', phone: '+243 822 333 444', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80' },
+  { id: '34', name: 'Henri Tshimanga', phone: '+243 833 444 555', city: 'Goma', tickets: 3, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&q=80' },
+  { id: '35', name: 'Isabelle Lukusa', phone: '+243 844 555 666', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150&q=80' },
+  { id: '36', name: 'Justin Kabuya', phone: '+243 855 666 777', city: 'Matadi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+  { id: '37', name: 'Kadiatou Mampuya', phone: '+243 812 777 888', city: 'Lubumbashi', tickets: 4, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
+  { id: '38', name: 'Leon Ngoy', phone: '+243 822 888 999', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&q=80' },
+  { id: '39', name: 'Mireille Mwamba', phone: '+243 833 999 000', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80' },
+  { id: '40', name: 'Nathan Tshimanga', phone: '+243 844 000 111', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
+  { id: '41', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', tickets: 2, status: 'approved', lotteryId: '6', proof: true, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80' },
+
+  // Lottery 5 (Weekly Cash Prize)
+  { id: '50', name: 'Esther Kimani', phone: '+243 812 333 999', city: 'Kinshasa', tickets: 1, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
+  { id: '51', name: 'Jean Bosco', phone: '+243 822 444 888', city: 'Lubumbashi', tickets: 1, status: 'pending', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
+  { id: '52', name: 'Marie Josee', phone: '+243 833 555 777', city: 'Goma', tickets: 1, status: 'pending', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
+  { id: '53', name: 'Papa Wemba', phone: '+243 844 666 555', city: 'Matadi', tickets: 1, status: 'rejected', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
+  { id: '54', name: 'Mama Africa', phone: '+243 855 777 444', city: 'Bukavu', tickets: 1, status: 'approved', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
+  { id: '55', name: 'Prince Kulu', phone: '+243 866 888 333', city: 'Kinshasa', tickets: 1, status: 'pending', lotteryId: '5', proof: true, avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' },
 ]
 
 export const mockUsers = [
@@ -98,33 +149,33 @@ export const mockUsers = [
 ]
 
 export const mockMessages = [
-  { 
-    id: 'TKT-1024', user: 'Elena Rodriguez', issue: 'Cannot verify my account', 
-    category: 'Account', priority: 'High', status: 'open', 
+  {
+    id: 'TKT-1024', user: 'Elena Rodriguez', issue: 'Cannot verify my account',
+    category: 'Account', priority: 'High', status: 'open',
     time: 'Just now', date: 'Oct 24, 09:12 AM',
     preview: 'I uploaded my ID three times but verification keeps failing. I receive an error saying "document unclear" but the photo quality is fine. Can someone please look into this?',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80',
     attachment: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=600&q=80'
   },
-  { 
-    id: 'TKT-1023', user: 'Marcus Okonkwo', issue: 'Payment charged twice for Premium plan', 
-    category: 'Billing', priority: 'High', status: 'in-progress', 
+  {
+    id: 'TKT-1023', user: 'Marcus Okonkwo', issue: 'Payment charged twice for Premium plan',
+    category: 'Billing', priority: 'High', status: 'in-progress',
     time: '5h ago', date: 'Oct 24, 04:30 AM',
     preview: 'I tried to buy a ticket for the iPhone draw but my mobile money account was charged twice. Please refund the second charge.',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80',
     attachment: null
   },
-  { 
-    id: 'TKT-1022', user: 'Priya Sharma', issue: 'Feature request: dark mode', 
-    category: 'Feature Request', priority: 'Low', status: 'resolved', 
+  {
+    id: 'TKT-1022', user: 'Priya Sharma', issue: 'Feature request: dark mode',
+    category: 'Feature Request', priority: 'Low', status: 'resolved',
     time: '1d ago', date: 'Oct 23, 11:20 AM',
     preview: 'The app is great but it hurts my eyes at night. Are there any plans to add a dark mode in the future?',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80',
     attachment: null
   },
-  { 
-    id: 'TKT-1021', user: 'Aiko Tanaka', issue: 'App crashes when uploading photos', 
-    category: 'Bug', priority: 'Medium', status: 'in-progress', 
+  {
+    id: 'TKT-1021', user: 'Aiko Tanaka', issue: 'App crashes when uploading photos',
+    category: 'Bug', priority: 'Medium', status: 'in-progress',
     time: '1d ago', date: 'Oct 23, 09:15 AM',
     preview: 'Every time I try to upload my payment proof, the app immediately closes. I am using a Samsung Galaxy S21.',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80',

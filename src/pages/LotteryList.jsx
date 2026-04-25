@@ -98,9 +98,24 @@ export default function LotteryList() {
                     </div>
                   </td>
                   <td>
-                    <div className="flex items-center gap-2">
-                      <img src={l.winner?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'} alt="" style={{ width: 24, height: 24, borderRadius: '50%' }} />
-                      <span style={{ fontWeight: 600, color: 'var(--gold)' }}>{l.winner?.name || 'Unknown'}</span>
+                    <div className="flex items-center -space-x-2">
+                      {l.winners?.slice(0, 3).map((w, idx) => (
+                        <img 
+                          key={idx} 
+                          src={w.avatar} 
+                          alt={w.name} 
+                          title={w.name}
+                          style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid var(--bg-card)', position: 'relative', marginLeft: idx > 0 ? -8 : 0 }} 
+                        />
+                      ))}
+                      {l.winners?.length > 3 && (
+                        <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--bg-elevated)', border: '2px solid var(--bg-card)', fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, marginLeft: -8 }}>
+                          +{l.winners.length - 3}
+                        </div>
+                      )}
+                      <span style={{ fontWeight: 600, color: 'var(--gold)', marginLeft: 8 }}>
+                        {l.winners?.length === 1 ? l.winners[0].name : `${l.winners?.length} Winners`}
+                      </span>
                     </div>
                   </td>
                   <td>{l.participants}</td>
@@ -164,9 +179,9 @@ function LotteryCard({ lottery: l, onView }) {
           Revenue: <strong style={{ color: 'var(--text-secondary)' }}>{l.revenue.toLocaleString()} CDF</strong>
         </div>
         <div className="lottery-actions" style={{ marginTop: 10 }}>
-          <button 
-            className={`btn ${l.status === 'active' ? 'btn-primary' : 'btn-ghost'} btn-sm`} 
-            style={{ width: '100%', justifyContent: 'center', padding: '9px 0' }} 
+          <button
+            className={`btn ${l.status === 'active' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
+            style={{ width: '100%', justifyContent: 'center', padding: '9px 0' }}
             onClick={onView}
           >
             {l.status === 'completed' || l.status === 'closed' ? 'View Results' : 'Manage Lottery'}
