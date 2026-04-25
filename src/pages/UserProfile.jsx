@@ -154,7 +154,7 @@ export default function UserProfile() {
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>Lottery</th><th>Amount Paid</th><th>Proof</th><th>Status</th><th>Date</th></tr>
+              <tr><th>Lottery</th><th>Amount Paid</th><th>Verify Proof</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody>
               {mockLotteries.slice(0, 3).map(l => (
@@ -162,8 +162,8 @@ export default function UserProfile() {
                   <td className="td-primary">{l.title}</td>
                   <td style={{ fontWeight: 600 }}>{2500.toLocaleString()} CDF</td>
                   <td>
-                    <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <FileText size={12} /> View Proof
+                    <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4, color: 'var(--accent-light)' }}>
+                      <FileText size={12} /> Verify Proof
                     </button>
                   </td>
                   <td><span className="badge badge-approved">approved</span></td>
