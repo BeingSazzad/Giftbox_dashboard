@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Wallet, DollarSign, TrendingUp, Phone, Globe, CreditCard, Save, CheckCircle } from 'lucide-react'
+import { Wallet, DollarSign, TrendingUp, Phone, Globe, CreditCard, Save, CheckCircle, Users } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
 export default function Finance() {

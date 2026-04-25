@@ -7,18 +7,16 @@ export default function Login({ onLogin }) {
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [particles, setParticles] = useState([])
+  const [particles] = useState(() => Array.from({ length: 18 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 3 + 1,
+    opacity: Math.random() * 0.4 + 0.1,
+    duration: Math.random() * 6 + 4,
+  })))
 
-  useEffect(() => {
-    setParticles(Array.from({ length: 18 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      opacity: Math.random() * 0.4 + 0.1,
-      duration: Math.random() * 6 + 4,
-    })))
-  }, [])
+
 
   const handleLogin = (e) => {
     e.preventDefault()

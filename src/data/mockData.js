@@ -4,14 +4,14 @@ export const mockLotteries = [
     id: '1',
     title: 'iPhone 15 Pro Max Giveaway',
     description: 'Win the latest iPhone 15 Pro Max — 256GB, Titanium Black. The ultimate prize for tech lovers!',
-    banner: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=1200&q=80',
-    prize: { name: 'iPhone 15 Pro Max', description: '256GB Titanium Black', image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=800&q=80' },
+    banner: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=1200&q=80',
+    prize: { name: 'iPhone 15 Pro Max', description: '256GB Titanium Black', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&q=80' },
     ticketPrice: 2500,
     startDate: '2026-04-01',
     endDate: '2026-05-15',
     status: 'active',
     participants: 1240,
-    pendingApprovals: 12,
+    pendingApprovals: 45,
     revenue: 3100000,
   },
   {
@@ -37,10 +37,10 @@ export const mockLotteries = [
     ticketPrice: 5000,
     startDate: '2026-04-10',
     endDate: '2026-06-01',
-    status: 'active',
-    participants: 450,
-    pendingApprovals: 5,
-    revenue: 2250000,
+    status: 'scheduled',
+    participants: 0,
+    pendingApprovals: 0,
+    revenue: 0,
   },
   {
     id: '9',
@@ -168,8 +168,8 @@ export const mockLotteries = [
 export const mockParticipants = [
   // Lottery 1
   { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', tickets: 3, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80' },
-  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
-  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
+  { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', tickets: 1, status: 'rejected', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80' },
+  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', tickets: 2, status: 'pending', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80' },
   { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', tickets: 1, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80' },
   { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', tickets: 4, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&q=80' },
   { id: '101', name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', tickets: 2, status: 'approved', lotteryId: '1', proof: true, avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
@@ -233,9 +233,9 @@ export const mockParticipants = [
 ]
 
 export const mockUsers = [
-  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', city: 'Kinshasa', status: 'active', joined: '2026-01-15', tickets: 12, wins: 0, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80', dob: '1995-05-12' },
+  { id: '1', name: 'Marie Kabila', phone: '+243 810 111 222', email: 'marie.k@gmail.com', city: 'Kinshasa', status: 'active', joined: '2026-01-15', tickets: 12, wins: 0, avatar: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&q=80', dob: '1995-05-12' },
   { id: '2', name: 'Patrick Ngoy', phone: '+243 820 333 444', city: 'Lubumbashi', status: 'active', joined: '2026-02-03', tickets: 5, wins: 0, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80', dob: '1988-11-20' },
-  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', city: 'Goma', status: 'active', joined: '2026-01-28', tickets: 8, wins: 1, avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80', dob: '2001-03-15' },
+  { id: '3', name: 'Claudine Mwamba', phone: '+243 830 555 666', email: 'claudine.m@outlook.com', city: 'Goma', status: 'active', joined: '2026-01-28', tickets: 8, wins: 1, avatar: 'https://images.unsplash.com/photo-1531746020798-e795f5328c17?w=150&q=80', dob: '2001-03-15' },
   { id: '4', name: 'Eric Tshimanga', phone: '+243 815 777 888', city: 'Kisangani', status: 'suspended', joined: '2026-03-10', tickets: 2, wins: 0, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80', dob: '1992-07-08' },
   { id: '5', name: 'Anita Lukusa', phone: '+243 825 999 000', city: 'Kinshasa', status: 'active', joined: '2026-02-20', tickets: 9, wins: 0, avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=150&q=80', dob: '1990-12-30' },
   { id: '6', name: 'Bernard Kabuya', phone: '+243 812 123 456', city: 'Matadi', status: 'active', joined: '2026-03-01', tickets: 6, wins: 0, avatar: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&q=80', dob: '1985-09-14' },

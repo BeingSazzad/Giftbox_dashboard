@@ -291,8 +291,10 @@ export default function WinnerSelection() {
                  <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--gold)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{idx + 1}</div>
                  <img src={w.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%' }} />
                  <div style={{ flex: 1, textAlign: 'left' }}>
-                    <div style={{ fontWeight: 700 }}>{w.name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{w.city} · {w.phone}</div>
+                            <div style={{ fontWeight: 700 }}>{w.name}</div>
+                            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                              {w.phone}{w.email ? ` · ${w.email}` : ''} · {w.city}
+                            </div>
                  </div>
               </div>
             ))}
@@ -323,8 +325,10 @@ export default function WinnerSelection() {
                 <div key={idx} style={{ background: 'rgba(245,158,11,.05)', border: '1px solid rgba(245,158,11,.15)', borderRadius: 12, padding: 12, display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                    <img src={w.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid var(--gold)' }} />
                    <div style={{ flex: 1, textAlign: 'left' }}>
-                      <div style={{ fontWeight: 800, color: 'var(--gold)' }}>{w.name}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{w.city} · {w.phone}</div>
+                       <div style={{ fontWeight: 800, color: 'var(--gold)' }}>{w.name}</div>
+                       <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                         {w.phone}{w.email ? ` · ${w.email}` : ''} · {w.city}
+                       </div>
                    </div>
                 </div>
              ))}
@@ -345,19 +349,40 @@ export default function WinnerSelection() {
                 <div style={{ background: 'rgba(16,185,129,.1)', color: 'var(--green)', borderRadius: 12, padding: '12px 20px', fontSize: 13, fontWeight: 600 }}>
                   🎉 Result Successfully Published
                 </div>
-                <button 
-                  className="btn btn-ghost btn-sm" 
-                  style={{ color: 'var(--red)', background: 'rgba(239,68,68,.05)', border: '1px solid rgba(239,68,68,.1)' }}
-                  onClick={() => {
-                    if (window.confirm("Prizes not claimed? You can re-draw or change winners. Proceed?")) {
-                      setStage(1);
-                      setLocked(false);
-                      setWinners([]);
-                    }
-                  }}
-                >
-                  <RotateCcw size={12} /> Redraw / Change Winners
-                </button>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', alignItems: 'center' }}>
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ height: 44, padding: '0 32px', borderRadius: 12, fontWeight: 700, fontSize: 14 }}
+                    onClick={() => navigate('/lotteries')}
+                  >
+                    Done & Return to Lotteries
+                  </button>
+                  <button 
+                    className="btn btn-sm" 
+                    style={{ 
+                      height: 44,
+                      padding: '0 24px',
+                      color: 'var(--red)', 
+                      background: 'rgba(239,68,68,.1)', 
+                      border: '1.5px solid var(--red)',
+                      fontWeight: 700,
+                      fontSize: 14,
+                      borderRadius: 12,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8
+                    }}
+                    onClick={() => {
+                      if (window.confirm("Prizes not claimed? You can re-draw or change winners. Proceed?")) {
+                        setStage(1);
+                        setLocked(false);
+                        setWinners([]);
+                      }
+                    }}
+                  >
+                    <RotateCcw size={16} /> Redraw
+                  </button>
+                </div>
               </div>
             </div>
           )}

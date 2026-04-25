@@ -832,3 +832,9 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   .metric-grid { grid-template-columns: repeat(2, 1fr); }
   .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
 }
+
+.container { width: 100%; margin: 0 auto; }
+@media (min-width: 640px) { .container { max-width: 640px; } }
+@media (min-width: 768px) { .container { max-width: 768px; } }
+@media (min-width: 1024px) { .container { max-width: 1024px; } }
+@media (min-width: 1280px) { .container { max-width: 1280px; } }

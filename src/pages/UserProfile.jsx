@@ -6,10 +6,12 @@ import { mockUsers, mockParticipants, mockLotteries } from '../data/mockData'
 export default function UserProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const user = mockUsers.find(u => u.id === id)
+
   const [tab, setTab] = useState('history')
   const [suspended, setSuspended] = useState(false)
+  const [viewProof, setViewProof] = useState(null)
 
-  const user = mockUsers.find(u => u.id === id)
   if (!user) return (
     <div className="empty-state">
       <div className="empty-icon">❓</div>
@@ -66,8 +68,9 @@ export default function UserProfile() {
                   <CreditCard size={14} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phone Number</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Contact Info</div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.phone}</div>
+                  {user.email && <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400 }}>{user.email}</div>}
                 </div>
               </div>
 
@@ -154,17 +157,22 @@ export default function UserProfile() {
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>Lottery</th><th>Amount Paid</th><th>Verify Proof</th><th>Status</th><th>Date</th></tr>
+              <tr><th>Lottery</th><th>Amount Paid</th><th>Proof</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody>
               {mockLotteries.slice(0, 3).map(l => (
                 <tr key={l.id}>
                   <td className="td-primary">{l.title}</td>
-                  <td style={{ fontWeight: 600 }}>{2500.toLocaleString()} CDF</td>
-                  <td>
-                    <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4, color: 'var(--accent-light)' }}>
-                      <FileText size={12} /> Verify Proof
-                    </button>
+                  <td style={{ fontWeight: 600 }}>{(2500).toLocaleString()} CDF</td>
+                   <td>
+                    <div 
+                      onClick={() => setViewProof(l)}
+                      style={{ 
+                        width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)' 
+                      }}
+                    >
+                      <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
                   </td>
                   <td><span className="badge badge-approved">approved</span></td>
                   <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{l.startDate}</td>
@@ -191,6 +199,39 @@ export default function UserProfile() {
               <div className="empty-text">This user hasn't won any lotteries yet.</div>
             </div>
           )}
+        </div>
+      )}
+      {/* View Proof Modal */}
+      {viewProof && (
+        <div className="modal-overlay" onClick={() => setViewProof(null)}>
+          <div className="modal" style={{ maxWidth: 500 }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Payment Proof — {viewProof.title}</span>
+              <button className="modal-close" onClick={() => setViewProof(null)}>×</button>
+            </div>
+            <div className="modal-body" style={{ textAlign: 'center' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=800" 
+                alt="Payment Proof" 
+                style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }} 
+              />
+              <div style={{ marginTop: 20, padding: 18, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Date Uploaded</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>{viewProof.startDate}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Verified</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--primary)' }}>2,500 CDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-primary w-full" onClick={() => setViewProof(null)}>Close View</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

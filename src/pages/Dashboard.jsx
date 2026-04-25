@@ -116,7 +116,7 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics */}
-      <div className="metric-grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+      <div className="metric-grid">
         {metrics.map(m => (
           <div key={m.label} className={`metric-card ${m.color}`}>
             <div className="flex items-center justify-between">

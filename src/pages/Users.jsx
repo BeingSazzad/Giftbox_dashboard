@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Filter, Eye, UserX, Download, Users as UsersIcon, UserCheck, UserMinus } from 'lucide-react'
+import { Search, Filter, Eye, UserX, Download, Users as UsersIcon, UserCheck, UserMinus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { mockUsers } from '../data/mockData'
 
 export default function Users() {
@@ -17,6 +17,14 @@ export default function Users() {
     const matchStatus = statusFilter === 'All' || u.status === statusFilter
     return matchSearch && matchCity && matchStatus
   })
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [goToPage, setGoToPage] = useState('')
+
+  const totalPages = Math.ceil(filtered.length / pageSize)
+  const paginatedList = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   return (
     <div>
@@ -90,9 +98,9 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((u, i) => (
+            {paginatedList.map((u, i) => (
               <tr key={u.id}>
-                <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{i + 1}</td>
+                <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{(currentPage - 1) * pageSize + i + 1}</td>
                 <td>
                   <div className="flex items-center gap-3">
                     <img src={u.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border)' }} />
@@ -128,6 +136,53 @@ export default function Users() {
             ))}
           </tbody>
         </table>
+
+        {/* Modern Pagination UI */}
+        {filtered.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, padding: '20px 16px', borderTop: '1px solid var(--border)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+              <span>Show</span>
+              <select 
+                value={pageSize} 
+                onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+                style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', color: 'var(--text-primary)', outline: 'none', cursor: 'pointer' }}
+              >
+                {[10, 20, 50, 100].map(v => <option key={v} value={v}>{v}</option>)}
+              </select>
+              <span>entries</span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <button className="btn btn-ghost btn-sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ width: 32, height: 32, padding: 0 }}>
+                  <ChevronLeft size={16} />
+                </button>
+                {[...Array(totalPages)].map((_, i) => (
+                  <button key={i} className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setCurrentPage(i + 1)} style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', fontWeight: 600 }}>{i + 1}</button>
+                ))}
+                <button className="btn btn-ghost btn-sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ width: 32, height: 32, padding: 0 }}>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                <span>Go to</span>
+                <input 
+                  type="text" 
+                  value={goToPage}
+                  onChange={(e) => setGoToPage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = parseInt(goToPage)
+                      if (val >= 1 && val <= totalPages) { setCurrentPage(val); setGoToPage(''); }
+                    }
+                  }}
+                  style={{ width: 44, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', textAlign: 'center', color: 'var(--text-primary)', outline: 'none' }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
         {filtered.length === 0 && (
           <div className="empty-state"><div className="empty-icon">👤</div><div className="empty-title">No users found</div></div>
         )}

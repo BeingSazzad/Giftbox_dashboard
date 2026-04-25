@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Users, Clock, CheckCircle, XCircle, RotateCcw,
-  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp, AlertTriangle, FileText, Smartphone, HelpCircle
+  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp, AlertTriangle, FileText, Smartphone, HelpCircle,
+  ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { mockLotteries, mockParticipants } from '../data/mockData'
 
@@ -30,14 +31,37 @@ export default function LotteryDetail() {
   const [rejectModal, setRejectModal] = useState(null)
   const [viewProof, setViewProof] = useState(null)
   const [rejectReason, setRejectReason] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [goToPage, setGoToPage] = useState('')
 
   const [lottery, setLottery] = useState(mockLotteries.find(l => l.id === id))
   const { d, h, m, s } = useCountdown(lottery?.endDate || '')
+
+  // Pagination logic
+  const filteredParticipants = tab === 'participants' ? participants : participants.filter(p => p.status === 'pending')
+  const totalPages = Math.ceil(filteredParticipants.length / pageSize)
+  const paginatedList = filteredParticipants.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
+  const changeTab = (t) => {
+    setTab(t)
+    setCurrentPage(1)
+  }
+
+  const approveP = (pid) => setParticipants(ps => ps.map(p => p.id === pid ? { ...p, status: 'approved' } : p))
+  const rejectP = (pid) => { setParticipants(ps => ps.map(p => p.id === pid ? { ...p, status: 'rejected' } : p)); setRejectModal(null) }
 
   const endLottery = () => {
     if (window.confirm('Are you sure you want to end this lottery immediately?')) {
       setLottery({ ...lottery, status: 'drawing' })
     }
+  }
+
+  const statCounts = {
+    all: participants.length,
+    approved: participants.filter(p => p.status === 'approved').length,
+    pending: participants.filter(p => p.status === 'pending').length,
+    rejected: participants.filter(p => p.status === 'rejected').length,
   }
 
   if (!lottery) return (
@@ -49,16 +73,6 @@ export default function LotteryDetail() {
       </button>
     </div>
   )
-
-  const approveP = (pid) => setParticipants(ps => ps.map(p => p.id === pid ? { ...p, status: 'approved' } : p))
-  const rejectP = (pid) => { setParticipants(ps => ps.map(p => p.id === pid ? { ...p, status: 'rejected' } : p)); setRejectModal(null) }
-
-  const statCounts = {
-    all: participants.length,
-    approved: participants.filter(p => p.status === 'approved').length,
-    pending: participants.filter(p => p.status === 'pending').length,
-    rejected: participants.filter(p => p.status === 'rejected').length,
-  }
 
   return (
     <div>
@@ -195,38 +209,58 @@ export default function LotteryDetail() {
                   <div key={idx} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <img src={w.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--gold)' }} />
                     <div>
-                      <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 15 }}>{w.name}</div>
+                      <div 
+                        onClick={() => navigate(`/users/${w.id}`)}
+                        style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 15, cursor: 'pointer' }}
+                        onMouseOver={e => e.target.style.color = 'var(--primary)'}
+                        onMouseOut={e => e.target.style.color = 'var(--text-primary)'}
+                      >
+                        {w.name}
+                      </div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', gap: 8 }}>
                         <span>{w.phone}</span>
+                        {w.email && (
+                          <>
+                            <span style={{ opacity: 0.5 }}>•</span>
+                            <span>{w.email}</span>
+                          </>
+                        )}
                         <span style={{ opacity: 0.5 }}>•</span>
                         <span>{w.city}</span>
                       </div>
                     </div>
+                    <div 
+                      onClick={() => setViewProof(w)}
+                      style={{ marginLeft: 'auto', width: 40, height: 28, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                    >
+                      <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
                   </div>
                 ))}
               </div>
-              <button
-                className="btn btn-sm"
-                style={{
-                  marginTop: 20,
-                  width: '100%',
-                  height: 40,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  background: 'rgba(245,158,11,.1)',
-                  color: 'var(--gold)',
-                  border: '1px solid rgba(245,158,11,.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 10,
-                  borderRadius: 12,
-                  transition: 'var(--transition)'
-                }}
-                onClick={() => navigate(`/lotteries/${id}/winner`)}
-              >
-                <RotateCcw size={14} /> Re-Draw / Change Winners
-              </button>
+                  <button
+                    className="btn btn-sm"
+                    style={{
+                      marginTop: 20,
+                      width: '100%',
+                      height: 44,
+                      fontSize: 13,
+                      fontWeight: 800,
+                      background: 'rgba(245,158,11,.15)',
+                      color: 'var(--gold)',
+                      border: '1.5px solid var(--gold)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 10,
+                      borderRadius: 14,
+                      transition: 'var(--transition)',
+                      boxShadow: '0 4px 12px rgba(245,158,11,0.1)'
+                    }}
+                    onClick={() => navigate(`/lotteries/${id}/winner`)}
+                  >
+                    <RotateCcw size={16} strokeWidth={2.5} /> RE-DRAW / CHANGE WINNERS
+                  </button>
             </div>
           )}
         </div>
@@ -238,8 +272,13 @@ export default function LotteryDetail() {
           <div className="flex items-center gap-3 mb-5">
             <div className="tabs">
               {['participants', 'proofs'].map(t => (
-                <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                <button 
+                  key={t} 
+                  className={`tab-btn ${tab === t ? 'active' : ''}`} 
+                  onClick={() => setTab(t)}
+                  style={{ textTransform: 'capitalize' }}
+                >
+                  {t === 'proofs' ? 'Review Proofs' : t}
                   {t === 'proofs' && statCounts.pending > 0 && (
                     <span style={{ marginLeft: 6, background: 'var(--gold)', color: '#1a1000', borderRadius: 10, padding: '0 6px', fontSize: 10, fontWeight: 700 }}>{statCounts.pending}</span>
                   )}
@@ -263,21 +302,127 @@ export default function LotteryDetail() {
                     <th>Phone</th>
                     <th>City</th>
                     <th>Total Paid</th>
+                    <th>Proof</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {participants.map(p => (
+                  {paginatedList.map(p => (
                     <tr key={p.id}>
-                      <td className="td-primary">{p.name}</td>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <img src={p.avatar} alt="" style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
+                          <div className="td-primary">{p.name}</div>
+                        </div>
+                      </td>
                       <td>{p.phone}</td>
                       <td>{p.city}</td>
                       <td>{lottery.ticketPrice.toLocaleString()} CDF</td>
+                      <td>
+                        <div 
+                          onClick={() => setViewProof(p)}
+                          style={{ width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)' }}
+                        >
+                          <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      </td>
                       <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
+                      <td>
+                        <button 
+                          className="btn btn-ghost btn-sm" 
+                          onClick={() => navigate(`/users/${p.id}`)}
+                          style={{ padding: '4px 8px', height: 28 }}
+                        >
+                          <Eye size={14} /> Profile
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Modern Pagination UI */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, padding: '24px 16px', borderTop: '1px solid var(--border)' }}>
+                {/* Left: Items per page */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                  <span>Show</span>
+                  <select 
+                    value={pageSize} 
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', color: 'var(--text-primary)', outline: 'none', cursor: 'pointer' }}
+                  >
+                    {[10, 20, 50, 100].map(v => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                  <span>entries</span>
+                </div>
+
+                {/* Right: Controls */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <button 
+                      className="btn btn-ghost btn-sm" 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      style={{ width: 32, height: 32, padding: 0, borderRadius: 8 }}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    
+                    {totalPages <= 7 ? (
+                      [...Array(totalPages)].map((_, i) => (
+                        <button
+                          key={i}
+                          className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-ghost'}`}
+                          onClick={() => setCurrentPage(i + 1)}
+                          style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', borderRadius: 8, fontWeight: 600 }}
+                        >
+                          {i + 1}
+                        </button>
+                      ))
+                    ) : (
+                      <>
+                        <button className={`btn btn-sm ${currentPage === 1 ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setCurrentPage(1)} style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', borderRadius: 8 }}>1</button>
+                        {currentPage > 3 && <span style={{ color: 'var(--text-tiny)' }}>...</span>}
+                        {currentPage > 2 && currentPage < totalPages - 1 && (
+                           <button className="btn btn-sm btn-primary" style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', borderRadius: 8 }}>{currentPage}</button>
+                        )}
+                        {currentPage < totalPages - 2 && <span style={{ color: 'var(--text-tiny)' }}>...</span>}
+                        <button className={`btn btn-sm ${currentPage === totalPages ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setCurrentPage(totalPages)} style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', borderRadius: 8 }}>{totalPages}</button>
+                      </>
+                    )}
+
+                    <button 
+                      className="btn btn-ghost btn-sm" 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      style={{ width: 32, height: 32, padding: 0, borderRadius: 8 }}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+
+                  {/* Go to page */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                    <span>Go to</span>
+                    <input 
+                      type="text" 
+                      value={goToPage}
+                      onChange={(e) => setGoToPage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = parseInt(goToPage)
+                          if (val >= 1 && val <= totalPages) {
+                            setCurrentPage(val)
+                            setGoToPage('')
+                          }
+                        }
+                      }}
+                      style={{ width: 44, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', textAlign: 'center', color: 'var(--text-primary)', outline: 'none' }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -295,7 +440,7 @@ export default function LotteryDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {participants.filter(p => p.proof || p.status === 'pending').map(p => (
+                  {paginatedList.map(p => (
                     <tr key={p.id}>
                       <td>
                         <div className="flex items-center gap-3">
@@ -355,6 +500,51 @@ export default function LotteryDetail() {
                   ))}
                 </tbody>
               </table>
+
+              {/* Modern Pagination UI for Proofs */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, padding: '24px 16px', borderTop: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                  <span>Show</span>
+                  <select 
+                    value={pageSize} 
+                    onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+                    style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', color: 'var(--text-primary)', outline: 'none', cursor: 'pointer' }}
+                  >
+                    {[10, 20, 50, 100].map(v => <option key={v} value={v}>{v}</option>)}
+                  </select>
+                  <span>entries</span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ width: 32, height: 32, padding: 0, borderRadius: 8 }}>
+                      <ChevronLeft size={16} />
+                    </button>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <button key={i} className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setCurrentPage(i + 1)} style={{ width: 32, height: 32, padding: 0, minWidth: 'auto', borderRadius: 8, fontWeight: 600 }}>{i + 1}</button>
+                    ))}
+                    <button className="btn btn-ghost btn-sm" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ width: 32, height: 32, padding: 0, borderRadius: 8 }}>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                    <span>Go to</span>
+                    <input 
+                      type="text" 
+                      value={goToPage}
+                      onChange={(e) => setGoToPage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = parseInt(goToPage)
+                          if (val >= 1 && val <= totalPages) { setCurrentPage(val); setGoToPage(''); }
+                        }
+                      }}
+                      style={{ width: 44, background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px', textAlign: 'center', color: 'var(--text-primary)', outline: 'none' }}
+                    />
+                  </div>
+                </div>
+              </div>
               {participants.filter(p => p.proof || p.status === 'pending').length === 0 && (
                 <div className="empty-state">
                   <div className="empty-icon"><FileText size={48} style={{ opacity: 0.2 }} /></div>
