@@ -76,7 +76,6 @@ export default function Dashboard() {
   const metrics = [
     { label: 'Total Users', value: mockUsers.length.toLocaleString(), icon: Users, color: 'blue', change: '12%', dir: 'up' },
     { label: 'Draws Completed', value: completedDraws.toLocaleString(), icon: CheckSquare, color: 'accent', change: '1', dir: 'up' },
-    { label: 'Pending Payments', value: pendingPayments.toLocaleString(), icon: CreditCard, color: 'gold', change: pendingPayments > 0 ? 'Action needed' : 'All clear', dir: pendingPayments > 0 ? 'down' : 'up' },
     { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: Tag, color: 'green', change: '24%', dir: 'up' },
     { label: 'Total Revenue', value: `${(totalRevenue / 1000).toFixed(0)}K CDF`, icon: Wallet, color: 'pink', change: '18%', dir: 'up' },
   ]
