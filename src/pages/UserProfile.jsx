@@ -120,9 +120,9 @@ export default function UserProfile() {
         {/* Quick Stats Banner */}
         <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)', display: 'flex', gap: 40 }}>
           {[
-            { val: user.tickets, lbl: 'Tickets Purchased', icon: Gift, color: 'var(--accent-light)' },
+            { val: userParticipations.length, lbl: 'Lotteries Joined', icon: Gift, color: 'var(--accent-light)' },
             { val: user.wins, lbl: 'Lotteries Won', icon: Trophy, color: 'var(--gold)' },
-            { val: (user.tickets * 2500).toLocaleString() + ' CDF', lbl: 'Total Investment', icon: CreditCard, color: 'var(--green)' },
+            { val: (userParticipations.length * 2500).toLocaleString() + ' CDF', lbl: 'Total Investment', icon: CreditCard, color: 'var(--green)' },
           ].map(s => (
             <div key={s.lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -154,14 +154,18 @@ export default function UserProfile() {
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>Lottery</th><th>Tickets</th><th>Amount Paid</th><th>Status</th><th>Date</th></tr>
+              <tr><th>Lottery</th><th>Amount Paid</th><th>Proof</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody>
               {mockLotteries.slice(0, 3).map(l => (
                 <tr key={l.id}>
                   <td className="td-primary">{l.title}</td>
-                  <td style={{ color: 'var(--accent-light)', fontWeight: 700 }}>×{Math.ceil(Math.random() * 3 + 1)}</td>
-                  <td>{(2500 * 2).toLocaleString()} CDF</td>
+                  <td style={{ fontWeight: 600 }}>{2500.toLocaleString()} CDF</td>
+                  <td>
+                    <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <FileText size={12} /> View Proof
+                    </button>
+                  </td>
                   <td><span className="badge badge-approved">approved</span></td>
                   <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{l.startDate}</td>
                 </tr>
