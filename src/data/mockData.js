@@ -37,11 +37,11 @@ export const mockLotteries = [
     ticketPrice: 2500,
     startDate: '2026-02-01',
     endDate: '2026-03-31',
-    status: 'closed',
+    status: 'completed',
     participants: 480,
     pendingApprovals: 0,
     revenue: 1200000,
-    winners: [],
+    winners: [{ name: 'Jean-Pierre Mukeba', phone: '+243 812 345 678', city: 'Kinshasa', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80' }],
   },
   {
     id: '4',
@@ -56,6 +56,24 @@ export const mockLotteries = [
     participants: 0,
     pendingApprovals: 0,
     revenue: 0,
+  },
+  {
+    id: '7',
+    title: 'Smart Home Hub Bundle',
+    description: 'Complete smart home setup including speakers, lights, and hub.',
+    banner: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=1200&q=80',
+    prize: { name: 'Smart Home Hub', description: 'Google Nest + Philips Hue', image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=800&q=80' },
+    ticketPrice: 1500,
+    startDate: '2026-01-10',
+    endDate: '2026-01-25',
+    status: 'completed',
+    participants: 850,
+    pendingApprovals: 0,
+    revenue: 1275000,
+    winners: [
+      { name: 'Sophie Ilunga', phone: '+243 840 234 567', city: 'Bukavu', avatar: 'https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=150&q=80' },
+      { name: 'David Kalombo', phone: '+243 850 345 678', city: 'Mbuji-Mayi', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&q=80' }
+    ],
   },
   {
     id: '5',

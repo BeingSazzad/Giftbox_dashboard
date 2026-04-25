@@ -41,14 +41,13 @@ export default function LotteryCreate() {
   return (
     <div style={{ maxWidth: 680, margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button className="btn btn-ghost btn-sm" onClick={() => navigate('/lotteries')}>
-          <ArrowLeft size={14} /> Back
-        </button>
-        <div>
-          <div className="section-title">Create New Lottery</div>
-          <div className="section-sub">Step {step + 1} of {STEPS.length}</div>
-        </div>
+      <button className="btn btn-ghost btn-sm mb-4" onClick={() => navigate('/lotteries')}>
+        <ArrowLeft size={14} /> Back to Lotteries
+      </button>
+      
+      <div className="mb-6">
+        <div className="section-title">Create New Lottery</div>
+        <div className="section-sub">Step {step + 1} of {STEPS.length}</div>
       </div>
 
       {/* Stepper */}
@@ -74,7 +73,7 @@ export default function LotteryCreate() {
 
       {/* Navigation */}
       {step < 3 && (
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between" style={{ marginTop: 32 }}>
           <button className="btn btn-ghost" onClick={() => setStep(s => Math.max(0, s - 1))} disabled={step === 0}>
             <ArrowLeft size={14} /> Previous
           </button>

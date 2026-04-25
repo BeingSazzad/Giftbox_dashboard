@@ -536,7 +536,7 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
 }
 .step.active .step-num { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: var(--shadow-primary); }
 .step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
-.step-line { flex: 1; height: 2px; background: var(--border); margin: 0 8px; min-width: 20px; }
+.step-line { flex: 1; height: 2px; background: #D1D5DB; margin: 0 8px; min-width: 20px; }
 .step-line.done { background: var(--green); }
 
 /* ===== MESSAGES ===== */
