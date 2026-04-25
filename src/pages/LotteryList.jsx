@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Filter, Eye, Edit, Pause, X, RefreshCw, Gift, Users, Clock, Award } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
-const FILTERS = ['All', 'active', 'scheduled', 'drawing', 'completed', 'draft']
+const FILTERS = ['All', 'active', 'scheduled', 'closed', 'draft']
 
 export default function LotteryList() {
   const navigate = useNavigate()
@@ -11,7 +11,7 @@ export default function LotteryList() {
   const [activeTab, setActiveTab] = useState(new URLSearchParams(window.location.search).get('tab') === 'history' ? 'history' : 'management')
   const [search, setSearch] = useState('')
 
-  const statusOrder = { drawing: 1, locked: 2, active: 3, scheduled: 4, draft: 5, completed: 6 }
+  const statusOrder = { closed: 1, active: 2, scheduled: 3, draft: 4 }
 
   const filtered = mockLotteries.filter(l => {
     const matchStatus = filter === 'All' || l.status === filter
@@ -52,7 +52,7 @@ export default function LotteryList() {
             <div className="tabs">
               {FILTERS.map(f => (
                 <button key={f} className={`tab-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                  {f === 'closed' ? 'Ready to Draw' : f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
               ))}
             </div>
@@ -157,8 +157,8 @@ function LotteryCard({ lottery: l, onView }) {
           <span className={`badge badge-${l.status}`}>{l.status}</span>
         </div>
         {l.status !== 'draft' && (
-          <div className="lottery-countdown-badge">
-            {l.status === 'completed' ? '✓ Ended' : `${daysLeft}d left`}
+          <div className="lottery-countdown-badge" style={{ background: l.status === 'closed' ? 'var(--gold)' : '', color: l.status === 'closed' ? '#000' : '' }}>
+            {l.status === 'completed' ? '✓ Ended' : l.status === 'closed' ? '⚠️ Ready to Draw' : `${daysLeft}d left`}
           </div>
         )}
       </div>

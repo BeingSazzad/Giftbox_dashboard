@@ -226,64 +226,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Lotteries Overview */}
-      <div style={{ marginTop: 28 }}>
-        <div className="section-header">
-          <div>
-            <div className="section-title">Draws History</div>
-            <div className="section-sub">Current and past weekly draws</div>
-          </div>
-          <button className="btn btn-primary btn-sm" onClick={() => navigate('/lotteries?tab=history')}>
-            <Eye size={13} /> View All <ArrowRight size={12} />
-          </button>
-        </div>
-
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Lottery</th>
-                <th>Status</th>
-                <th>Participants</th>
-                <th>Pending</th>
-                <th>Revenue</th>
-                <th>Deadline</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockLotteries.map(l => (
-                <tr key={l.id}>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg, var(--bg-elevated), var(--accent-glow))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)', flexShrink: 0 }}>
-                        <Award size={18} />
-                      </div>
-                      <span className="td-primary" style={{ fontSize: 13 }}>{l.title}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`badge badge-${l.status}`}>{l.status}</span>
-                  </td>
-                  <td className="td-primary">{l.participants}</td>
-                  <td>
-                    {l.pendingApprovals > 0 ? (
-                      <span style={{ color: 'var(--gold)', fontWeight: 600 }}>{l.pendingApprovals}</span>
-                    ) : '—'}
-                  </td>
-                  <td className="td-primary">{l.revenue.toLocaleString()} CDF</td>
-                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{l.endDate}</td>
-                  <td>
-                    <button className="btn btn-outline btn-sm" onClick={() => navigate(`/lotteries/${l.id}`)}>
-                      <Eye size={12} /> View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   )
 }

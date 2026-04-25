@@ -164,7 +164,7 @@ export default function LotteryDetail() {
                 <XCircle size={16} /> End Lottery Now
               </button>
             )}
-            {lottery.status === 'drawing' && (
+            {(lottery.status === 'drawing' || lottery.status === 'closed') && (
               <button 
                 className="btn btn-gold" 
                 style={{ 
