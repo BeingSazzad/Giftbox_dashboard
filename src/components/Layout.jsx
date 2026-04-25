@@ -9,7 +9,6 @@ const NAV = [
     label: 'MAIN', items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Gift, label: 'Lotteries', path: '/lotteries', badge: '4' },
-      // { icon: Trophy, label: 'Winners', path: '/lotteries', special: 'winners' },
     ]
   },
   {
