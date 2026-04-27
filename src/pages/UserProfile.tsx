@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, UserX, RotateCcw, Activity, Gift, CreditCard, Trophy, Users, CheckCircle } from 'lucide-react'
+import { ArrowLeft, UserX, RotateCcw, Activity, Gift, CreditCard, Trophy, Users, CheckCircle, FileText } from 'lucide-react'
 import { mockUsers, mockParticipants, mockLotteries } from '../data/mockData'
 
 export default function UserProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const user = mockUsers.find(u => u.id === id)
+
   const [tab, setTab] = useState('history')
   const [suspended, setSuspended] = useState(false)
+  const [viewProof, setViewProof] = useState(null)
 
-  const user = mockUsers.find(u => u.id === id)
   if (!user) return (
     <div className="empty-state">
       <div className="empty-icon">❓</div>
@@ -24,13 +26,17 @@ export default function UserProfile() {
     mockParticipants.find(mp => mp.name === user.name)?.lotteryId === p.lotteryId && p.name === user.name
   )
 
-  const activityLog = [
-    { text: `Registered account`, time: user.joined, icon: Users },
-    { text: 'Participated in iPhone 15 Pro Max lottery', time: '2026-04-10', icon: Gift },
-    { text: 'Uploaded payment proof', time: '2026-04-10', icon: CreditCard },
-    { text: 'Payment approved by admin', time: '2026-04-11', icon: CheckCircle },
-    { text: 'Participated in Samsung TV lottery', time: '2026-03-20', icon: Gift },
-  ]
+  const calculateAge = (dob?: string) => {
+    if (!dob) return null
+    const birthDate = new Date(dob)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const m = today.getMonth() - birthDate.getMonth()
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--
+    return age
+  }
+
+  const age = calculateAge(user.dob)
 
   return (
     <div>
@@ -39,18 +45,16 @@ export default function UserProfile() {
       </button>
 
       {/* Profile Header */}
-      {/* Profile Header Card */}
       <div className="card" style={{ padding: '32px', marginBottom: 24, position: 'relative', overflow: 'hidden' }}>
-        {/* Background Accent */}
         <div style={{ position: 'absolute', top: 0, right: 0, width: '40%', height: '100%', background: 'linear-gradient(225deg, var(--primary-subtle) 0%, transparent 70%)', zIndex: 0 }} />
-        
+
         <div style={{ display: 'flex', gap: 32, alignItems: 'center', position: 'relative', zIndex: 1 }}>
-          <img 
-            src={user.avatar} 
-            alt={user.name} 
-            style={{ width: 100, height: 100, borderRadius: 'var(--radius-lg)', objectFit: 'cover', border: '4px solid var(--bg-page)', boxShadow: 'var(--shadow-card)' }} 
+          <img
+            src={user.avatar}
+            alt={user.name}
+            style={{ width: 100, height: 100, borderRadius: 'var(--radius-lg)', objectFit: 'cover', border: '4px solid var(--bg-page)', boxShadow: 'var(--shadow-card)' }}
           />
-          
+
           <div style={{ flex: 1 }}>
             <div className="flex items-center gap-3 mb-2">
               <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>{user.name}</h1>
@@ -66,44 +70,47 @@ export default function UserProfile() {
                   <CreditCard size={14} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phone Number</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Contact Info</div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.phone}</div>
+                  {user.email && <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400 }}>{user.email}</div>}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <Trophy size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Age Verification</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: age !== null && age < 18 ? 'var(--red)' : 'var(--text-primary)' }}>
+                    {age === null ? 'N/A' : `${age} Years Old`} {age !== null && age < 18 && ' (Underage)'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <Users size={14} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Date of Birth</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.dob || 'N/A'}</div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                   <Activity size={14} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email Address</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.email || 'user@giftbox.cd'}</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <RotateCcw size={14} />
                 </div>
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>City / Location</div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.city}</div>
                 </div>
               </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                  <Activity size={14} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-tiny)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Member Since</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{user.joined}</div>
-                </div>
-              </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div>
             <button
               className={`btn ${suspended || user.status === 'suspended' ? 'btn-success' : 'btn-danger'}`}
               onClick={() => setSuspended(s => !s)}
@@ -112,18 +119,15 @@ export default function UserProfile() {
               <UserX size={15} />
               {suspended || user.status === 'suspended' ? 'Unsuspend' : 'Suspend User'}
             </button>
-            <button className="btn btn-ghost">
-              <RotateCcw size={15} /> Reset Auth
-            </button>
           </div>
         </div>
 
         {/* Quick Stats Banner */}
         <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)', display: 'flex', gap: 40 }}>
           {[
-            { val: user.tickets, lbl: 'Tickets Purchased', icon: Gift, color: 'var(--accent-light)' },
+            { val: userParticipations.length, lbl: 'Lotteries Joined', icon: Gift, color: 'var(--accent-light)' },
             { val: user.wins, lbl: 'Lotteries Won', icon: Trophy, color: 'var(--gold)' },
-            { val: (user.tickets * 2500).toLocaleString() + ' CDF', lbl: 'Total Investment', icon: CreditCard, color: 'var(--green)' },
+            { val: (userParticipations.length * 2500).toLocaleString() + ' CDF', lbl: 'Total Investment', icon: CreditCard, color: 'var(--green)' },
           ].map(s => (
             <div key={s.lbl} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -142,9 +146,7 @@ export default function UserProfile() {
       <div className="tabs mb-5">
         {[
           { key: 'history', label: 'Participation History', icon: Gift },
-          { key: 'payments', label: 'Payment History', icon: CreditCard },
           { key: 'wins', label: 'Win History', icon: Trophy },
-          { key: 'activity', label: 'Activity Log', icon: Activity },
         ].map(t => (
           <button key={t.key} className={`tab-btn ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)}>
             {t.label}
@@ -157,43 +159,25 @@ export default function UserProfile() {
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>Lottery</th><th>Tickets</th><th>Amount Paid</th><th>Status</th><th>Date</th></tr>
+              <tr><th>Lottery</th><th>Amount Paid</th><th>Proof</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody>
               {mockLotteries.slice(0, 3).map(l => (
                 <tr key={l.id}>
                   <td className="td-primary">{l.title}</td>
-                  <td style={{ color: 'var(--accent-light)', fontWeight: 700 }}>×{Math.ceil(Math.random() * 3 + 1)}</td>
-                  <td>{(2500 * 2).toLocaleString()} CDF</td>
+                  <td style={{ fontWeight: 600 }}>{(2500).toLocaleString()} CDF</td>
+                   <td>
+                    <div 
+                      onClick={() => setViewProof(l)}
+                      style={{ 
+                        width: 44, height: 32, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: '1px solid var(--border)', position: 'relative', background: 'var(--bg-elevated)' 
+                      }}
+                    >
+                      <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=200" alt="Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  </td>
                   <td><span className="badge badge-approved">approved</span></td>
                   <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{l.startDate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Payment History */}
-      {tab === 'payments' && (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Transaction Ref</th><th>Lottery</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-              {[
-                { ref: 'TXN-20260410-001', lottery: 'iPhone 15 Pro Max', amount: 5000, method: 'M-Pesa', status: 'approved', date: '2026-04-10' },
-                { ref: 'TXN-20260320-014', lottery: 'Samsung TV', amount: 2500, method: 'Airtel Money', status: 'approved', date: '2026-03-20' },
-                { ref: 'TXN-20260215-007', lottery: 'PS5 Bundle', amount: 7500, method: 'M-Pesa', status: 'rejected', date: '2026-02-15' },
-              ].map(t => (
-                <tr key={t.ref}>
-                  <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>{t.ref}</td>
-                  <td className="td-primary">{t.lottery}</td>
-                  <td style={{ fontWeight: 700 }}>{t.amount.toLocaleString()} CDF</td>
-                  <td style={{ color: 'var(--text-muted)' }}>{t.method}</td>
-                  <td><span className={`badge badge-${t.status}`}>{t.status}</span></td>
-                  <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.date}</td>
                 </tr>
               ))}
             </tbody>
@@ -219,21 +203,37 @@ export default function UserProfile() {
           )}
         </div>
       )}
-
-      {/* Activity Log */}
-      {tab === 'activity' && (
-        <div className="card" style={{ padding: '6px 20px' }}>
-          {activityLog.map((a, i) => (
-            <div key={i} className="activity-item">
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-light)' }}>
-                <a.icon size={14} />
-              </div>
-              <div className="activity-detail">
-                <div className="activity-text">{a.text}</div>
-                <div className="activity-time">{a.time}</div>
+      {/* View Proof Modal */}
+      {viewProof && (
+        <div className="modal-overlay" onClick={() => setViewProof(null)}>
+          <div className="modal" style={{ maxWidth: 500 }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">Payment Proof — {viewProof.title}</span>
+              <button className="modal-close" onClick={() => setViewProof(null)}>×</button>
+            </div>
+            <div className="modal-body" style={{ textAlign: 'center' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=800" 
+                alt="Payment Proof" 
+                style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }} 
+              />
+              <div style={{ marginTop: 20, padding: 18, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Date Uploaded</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>{viewProof.startDate}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Verified</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--primary)' }}>2,500 CDF</div>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+            <div className="modal-footer">
+              <button className="btn btn-primary w-full" onClick={() => setViewProof(null)}>Close View</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

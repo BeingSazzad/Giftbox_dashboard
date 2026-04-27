@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Filter, Eye, Edit, Pause, X, RefreshCw, Gift, Users, Clock, Award } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
-const FILTERS = ['All', 'active', 'scheduled', 'drawing', 'completed', 'draft']
+const FILTERS = ['All', 'active', 'scheduled', 'closed', 'draft']
 
 export default function LotteryList() {
   const navigate = useNavigate()
-  const [filter, setFilter] = useState('All')
+  const [filter, setFilter] = useState('active')
   const [activeTab, setActiveTab] = useState(new URLSearchParams(window.location.search).get('tab') === 'history' ? 'history' : 'management')
   const [search, setSearch] = useState('')
 
-  const statusOrder = { drawing: 1, locked: 2, active: 3, scheduled: 4, draft: 5, completed: 6 }
+  const statusOrder = { closed: 1, active: 2, scheduled: 3, draft: 4 }
 
   const filtered = mockLotteries.filter(l => {
     const matchStatus = filter === 'All' || l.status === filter
@@ -52,7 +52,7 @@ export default function LotteryList() {
             <div className="tabs">
               {FILTERS.map(f => (
                 <button key={f} className={`tab-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-                  {f.charAt(0).toUpperCase() + f.slice(1)}
+                  {f === 'closed' ? 'Ready to Draw' : f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
               ))}
             </div>
@@ -98,9 +98,24 @@ export default function LotteryList() {
                     </div>
                   </td>
                   <td>
-                    <div className="flex items-center gap-2">
-                      <img src={l.winner?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'} alt="" style={{ width: 24, height: 24, borderRadius: '50%' }} />
-                      <span style={{ fontWeight: 600, color: 'var(--gold)' }}>{l.winner?.name || 'Unknown'}</span>
+                    <div className="flex items-center -space-x-2">
+                      {l.winners?.slice(0, 3).map((w, idx) => (
+                        <img 
+                          key={idx} 
+                          src={w.avatar} 
+                          alt={w.name} 
+                          title={w.name}
+                          style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid var(--bg-card)', position: 'relative', marginLeft: idx > 0 ? -8 : 0 }} 
+                        />
+                      ))}
+                      {l.winners?.length > 3 && (
+                        <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--bg-elevated)', border: '2px solid var(--bg-card)', fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, marginLeft: -8 }}>
+                          +{l.winners.length - 3}
+                        </div>
+                      )}
+                      <span style={{ fontWeight: 600, color: 'var(--gold)', marginLeft: 8 }}>
+                        {l.winners?.length === 1 ? l.winners[0].name : `${l.winners?.length} Winners`}
+                      </span>
                     </div>
                   </td>
                   <td>{l.participants}</td>
@@ -123,7 +138,7 @@ export default function LotteryList() {
 
 function LotteryCard({ lottery: l, onView }) {
   const navigate = useNavigate()
-  const daysLeft = Math.max(0, Math.ceil((new Date(l.endDate) - new Date()) / 86400000))
+  const daysLeft = Math.max(0, Math.ceil((new Date(l.endDate).getTime() - Date.now()) / 86400000))
 
   return (
     <div className="lottery-card">
@@ -142,8 +157,8 @@ function LotteryCard({ lottery: l, onView }) {
           <span className={`badge badge-${l.status}`}>{l.status}</span>
         </div>
         {l.status !== 'draft' && (
-          <div className="lottery-countdown-badge">
-            {l.status === 'completed' ? '✓ Ended' : `${daysLeft}d left`}
+          <div className="lottery-countdown-badge" style={{ background: l.status === 'closed' ? 'var(--gold)' : '', color: l.status === 'closed' ? '#000' : '' }}>
+            {l.status === 'completed' ? '✓ Ended' : l.status === 'closed' ? '⚠️ Ready to Draw' : `${daysLeft}d left`}
           </div>
         )}
       </div>
@@ -164,9 +179,9 @@ function LotteryCard({ lottery: l, onView }) {
           Revenue: <strong style={{ color: 'var(--text-secondary)' }}>{l.revenue.toLocaleString()} CDF</strong>
         </div>
         <div className="lottery-actions" style={{ marginTop: 10 }}>
-          <button 
-            className={`btn ${l.status === 'active' ? 'btn-primary' : 'btn-ghost'} btn-sm`} 
-            style={{ width: '100%', justifyContent: 'center', padding: '9px 0' }} 
+          <button
+            className={`btn ${l.status === 'active' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
+            style={{ width: '100%', justifyContent: 'center', padding: '9px 0' }}
             onClick={onView}
           >
             {l.status === 'completed' || l.status === 'closed' ? 'View Results' : 'Manage Lottery'}

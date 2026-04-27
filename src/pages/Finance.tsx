@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Wallet, DollarSign, TrendingUp, Phone, Globe, CreditCard, Save, CheckCircle } from 'lucide-react'
+import { Wallet, DollarSign, TrendingUp, Phone, Globe, CreditCard, Save, CheckCircle, Users } from 'lucide-react'
 import { mockLotteries } from '../data/mockData'
 
 export default function Finance() {
@@ -57,10 +57,10 @@ export default function Finance() {
 
         <div className="metric-card blue" style={{ flexDirection: 'row', alignItems: 'center', gap: 16, padding: '20px 16px' }}>
           <div className="metric-icon blue" style={{ width: 48, height: 48, flexShrink: 0 }}>
-            <CreditCard size={22} strokeWidth={2.5} />
+            <Users size={22} strokeWidth={2.5} />
           </div>
           <div style={{ flex: 1 }}>
-            <div className="metric-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>Tickets Sold</div>
+            <div className="metric-label" style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>Total Participations</div>
             <div className="metric-value" style={{ fontSize: '24px', fontFamily: 'Space Grotesk, sans-serif' }}>
               {ticketsSold.toLocaleString()}
             </div>
