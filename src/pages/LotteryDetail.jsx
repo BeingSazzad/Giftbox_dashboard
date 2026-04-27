@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Users, Clock, CheckCircle, XCircle, RotateCcw,
-  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp, AlertTriangle, FileText, Smartphone, HelpCircle
+  Trophy, Settings, Edit, Pause, X, Eye, Image, Tag, TrendingUp, AlertTriangle, FileText, Smartphone, HelpCircle,
+  Calendar
 } from 'lucide-react'
 import { mockLotteries, mockParticipants } from '../data/mockData'
 
@@ -21,6 +22,7 @@ function useCountdown(targetDate) {
   useEffect(() => { const id = setInterval(() => setT(calc()), 1000); return () => clearInterval(id) }, [targetDate])
   return t
 }
+// TODO:: need to review this component
 
 export default function LotteryDetail() {
   const { id } = useParams()
@@ -235,8 +237,6 @@ export default function LotteryDetail() {
             <thead>
               <tr>
                 <th>Sender</th>
-                <th>Method</th>
-                <th>Reference</th>
                 <th>Amount</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
@@ -255,14 +255,8 @@ export default function LotteryDetail() {
                     </div>
                   </td>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600 }}>
-                      <div style={{ width: 24, height: 24, borderRadius: 6, background: p.id % 3 === 0 ? '#FF6B0015' : p.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.id % 3 === 0 ? '#FF6B00' : p.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
-                        <Smartphone size={14} />
-                      </div>
-                      {p.id % 3 === 0 ? 'Orange' : p.id % 3 === 1 ? 'M-Pesa' : 'Airtel'}
-                    </div>
+          
                   </td>
-                  <td style={{ fontFamily: 'monospace', fontSize: 12, color: 'var(--accent-light)' }}>TXN-{Math.random().toString(36).substr(2, 9).toUpperCase()}</td>
                   <td style={{ fontWeight: 800 }}>{lottery.ticketPrice.toLocaleString()} CDF</td>
                   <td><span className={`badge badge-${p.status}`}>{p.status}</span></td>
                   <td>
@@ -301,7 +295,7 @@ export default function LotteryDetail() {
         <div className="modal-overlay" onClick={() => setViewProof(null)}>
           <div className="modal" style={{ maxWidth: 500 }} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <span className="modal-title">Payment Proof — {viewProof.name}</span>
+              <span className="modal-title">Customer Name: {viewProof.name}</span>
               <button className="modal-close" onClick={() => setViewProof(null)}><X size={14} /></button>
             </div>
             <div className="modal-body" style={{ textAlign: 'center' }}>
@@ -312,22 +306,18 @@ export default function LotteryDetail() {
               />
               <div style={{ marginTop: 20, padding: 18, background: 'var(--bg-elevated)', borderRadius: 12, textAlign: 'left' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-                  <div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Transaction Ref</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace' }}>TXN-3829482394</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
+                  <div >
                     <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: 4 }}>Amount Paid</div>
                     <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary)' }}>{lottery.ticketPrice.toLocaleString()} CDF</div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--bg-card)', borderRadius: 8, border: '1px solid var(--border)' }}>
                   <div style={{ width: 32, height: 32, borderRadius: 8, background: viewProof.id % 3 === 0 ? '#FF6B0015' : viewProof.id % 3 === 1 ? '#E11D4815' : '#2563EB15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: viewProof.id % 3 === 0 ? '#FF6B00' : viewProof.id % 3 === 1 ? '#E11D48' : '#2563EB' }}>
-                    <Smartphone size={18} />
+                    <Calendar size={18} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 700 }}>{viewProof.id % 3 === 0 ? 'Orange Money' : viewProof.id % 3 === 1 ? 'M-Pesa (Vodacom)' : 'Airtel Money'}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Submitted via mobile wallet</div>
+                    {/* <div style={{ fontSize: 12, fontWeight: 700 }}>{viewProof.id % 3 === 0 ? 'Orange Money' : viewProof.id % 3 === 1 ? 'M-Pesa (Vodacom)' : 'Airtel Money'}</div> */}
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Submitted Date</div>
                   </div>
                   <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>Apr 23, 14:22</div>
                 </div>

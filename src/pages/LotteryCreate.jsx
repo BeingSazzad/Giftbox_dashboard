@@ -46,6 +46,7 @@ export default function LotteryCreate() {
           <ArrowLeft size={14} /> Back
         </button>
         <div>
+          {/* TODO:: need to desing this */}
           <div className="section-title">Create New Lottery</div>
           <div className="section-sub">Step {step + 1} of {STEPS.length}</div>
         </div>
