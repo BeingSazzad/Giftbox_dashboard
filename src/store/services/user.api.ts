@@ -11,10 +11,16 @@ const userApi = api.injectEndpoints({
     }),
     // all users endpoint
     getAllUsers: build.query({
-      query: ({page, searchTerm}) => ({
+      query: ({ page, searchTerm, status, city, limit }) => ({
         url: "/users",
         method: "GET",
-        params: { page, searchTerm },
+        params: {
+          page,
+          limit,
+          ...(searchTerm && { searchTerm }),
+          ...(status !== "All" && { status }),
+          ...(city !== "All" && { city }),
+        },
       }),
     }),
   }),
