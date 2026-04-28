@@ -160,7 +160,7 @@ export default function Dashboard() {
     },
     {
       label: "Total Revenue",
-      value: `$${dashboardStats.totalRevenue} CDF`,
+      value: `${dashboardStats.totalRevenue} CDF`,
       icon: Wallet,
       color: "pink",
 

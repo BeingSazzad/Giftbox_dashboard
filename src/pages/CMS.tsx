@@ -1,178 +1,309 @@
-import { useState } from 'react'
-import { Save, Plus, Trash2, Edit, ChevronDown, ChevronUp, FileText, Shield, Info, HelpCircle } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { Save, Plus, Trash2, FileText, Shield, Users } from "lucide-react";
+import {
+  useCreateRolesMutation,
+  useCreateAboutRolesMutation,
+  useCreatePrivacyRolesMutation,
+  useGetRolesAboutQuery,
+  useGetRolesPrivacyQuery,
+  useGetRolesQuery,
+} from "../store/services/role.api";
+import { toast } from "sonner";
 
 const CMS_SECTIONS = [
-  { key: 'terms', label: 'Terms & Conditions', icon: FileText, color: 'var(--accent-light)' },
-  { key: 'privacy', label: 'Privacy Policy', icon: Shield, color: 'var(--blue)' },
-  { key: 'about', label: 'About Us', icon: Info, color: 'var(--gold)' },
-  { key: 'faq', label: 'FAQ Manager', icon: HelpCircle, color: 'var(--green)' },
-]
-
-const DEFAULT_CONTENT = {
-  terms: `# Terms & Conditions\n\nLast updated: April 20, 2026\n\n## 1. Participation\nBy purchasing a ticket, participants agree to abide by all lottery rules and regulations set by GiftBox.\n\n## 2. Payment\nAll ticket payments must be made via approved mobile money channels. Proof of payment is required.\n\n## 3. Winner Selection\nWinners are selected randomly from all approved participants. The decision of the admin is final.\n\n## 4. Prize Collection\nWinners will be contacted within 48 hours. Prizes must be claimed within 30 days.`,
-  privacy: `# Privacy Policy\n\nLast updated: April 20, 2026\n\nGiftBox is committed to protecting your personal information.\n\n## Data We Collect\n- Name and phone number\n- City of residence\n- Payment transaction references\n- Participation history\n\n## How We Use Your Data\nYour data is used solely for lottery management and winner notification. We do not sell or share your information with third parties.`,
-  about: `# About GiftBox\n\nGiftBox is the Democratic Republic of Congo's premier mobile lottery platform, connecting thousands of participants with life-changing prizes every month.\n\n## Our Mission\nTo create fair, transparent, and exciting lottery experiences that bring joy to communities across the DRC.\n\n## Built on Trust\nEvery lottery is managed with strict verification processes ensuring only eligible participants enter the prize pool.`,
-}
-
-const DEFAULT_FAQS = [
-  { id: '1', q: 'How do I participate in a lottery?', a: 'Download the GiftBox app, register with your phone number, select an active lottery, and pay for your ticket via M-Pesa or Orange Money.', open: false },
-  { id: '2', q: 'What payment methods are accepted?', a: 'We accept M-Pesa and Orange Money. After payment, upload your proof of payment in the app.', open: false },
-  { id: '3', q: 'How is the winner selected?', a: 'Winners are chosen using a certified random selection tool from all approved participants only.', open: false },
-  { id: '4', q: 'How will I know if I win?', a: 'Winners are notified via SMS and a push notification in the GiftBox app. Results are also published in the app.', open: false },
-  { id: '5', q: 'Can I buy multiple tickets?', a: 'Yes! You can buy up to 10 tickets per lottery, increasing your chances of winning.', open: false },
-]
+  { key: "terms", label: "Terms & Conditions", icon: FileText },
+  { key: "privacy", label: "Privacy Policy", icon: Shield },
+  { key: "about", label: "About Us", icon: FileText },
+  { key: "team", label: "Team Management", icon: Users },
+];
 
 export default function CMS() {
-  const [activeSection, setActiveSection] = useState('terms')
-  const [content, setContent] = useState(DEFAULT_CONTENT)
-  const [faqs, setFaqs] = useState(DEFAULT_FAQS)
-  const [newQ, setNewQ] = useState('')
-  const [newA, setNewA] = useState('')
-  const [faqOpen, setFaqOpen] = useState(null)
-  const [saved, setSaved] = useState(false)
+  const [activeSection, setActiveSection] = useState("terms");
 
-  const handleSave = () => {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
-  }
+  const [content, setContent] = useState({
+    terms: "",
+    privacy: "",
+    about: "",
+  });
 
-  const addFaq = () => {
-    if (!newQ || !newA) return
-    setFaqs(f => [...f, { id: Date.now().toString(), q: newQ, a: newA, open: false }])
-    setNewQ(''); setNewA('')
-  }
+  const [saved, setSaved] = useState(false);
 
-  const deleteFaq = (id) => {
-    if (window.confirm('Are you sure you want to delete this FAQ? This cannot be undone.')) {
-      setFaqs(f => f.filter(faq => faq.id !== id))
+  // TEAM STATE (unchanged)
+  const [team, setTeam] = useState([
+    {
+      id: 1,
+      name: "Main Admin",
+      email: "admin@giftbox.cd",
+      role: "Owner",
+    },
+  ]);
+
+  const [newAdmin, setNewAdmin] = useState({
+    name: "",
+    email: "",
+    role: "Admin",
+  });
+
+  const [showAddAdmin, setShowAddAdmin] = useState(false);
+
+  // API
+  const { data, isLoading } = useGetRolesQuery({});
+  const { data: privacyData, isLoading: isPrivacyLoading } =
+    useGetRolesPrivacyQuery({});
+  const { data: aboutData, isLoading: isAboutLoading } = useGetRolesAboutQuery(
+    {},
+  );
+
+  const [createRoles] = useCreateRolesMutation();
+  const [createAboutRoles] = useCreateAboutRolesMutation();
+  const [createPrivacyRoles] = useCreatePrivacyRolesMutation();
+
+  // TERMS
+  useEffect(() => {
+    if (data?.data?.content) {
+      setContent((prev) => ({
+        ...prev,
+        terms: data.data.content,
+      }));
     }
+  }, [data]);
+
+  // PRIVACY
+  useEffect(() => {
+    if (privacyData?.data?.content) {
+      setContent((prev) => ({
+        ...prev,
+        privacy: privacyData.data.content,
+      }));
+    }
+  }, [privacyData]);
+
+  // ABOUT
+  useEffect(() => {
+    if (aboutData?.data?.content) {
+      setContent((prev) => ({
+        ...prev,
+        about: aboutData.data.content,
+      }));
+    }
+  }, [aboutData]);
+
+  // SAVE (MAIN FIX)
+  const handleSave = async () => {
+    try {
+      if (activeSection === "terms") {
+        await createRoles({ content: content.terms, type: "TERMS" }).unwrap();
+      }
+
+      if (activeSection === "privacy") {
+        await createPrivacyRoles({
+          content: content.privacy,
+          type: "PRIVACY",
+        }).unwrap();
+      }
+
+      if (activeSection === "about") {
+        await createAboutRoles({
+          content: content.about,
+          type: "ABOUT",
+        }).unwrap();
+      }
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+
+      toast.success("Content saved successfully");
+    } catch (error) {
+      toast.error("Failed to save content");
+    }
+  };
+
+  // TEAM (unchanged)
+  const addAdmin = () => {
+    if (!newAdmin.name || !newAdmin.email) return;
+
+    setTeam((prev) => [...prev, { id: Date.now(), ...newAdmin }]);
+    setNewAdmin({ name: "", email: "", role: "Admin" });
+    setShowAddAdmin(false);
+  };
+
+  const deleteAdmin = (id: number) => {
+    setTeam((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  if (isLoading || isPrivacyLoading || isAboutLoading) {
+    return <div className="loading">Loading...</div>;
   }
 
   return (
     <div>
+      {/* HEADER */}
       <div className="section-header mb-6">
         <div>
           <div className="section-title">Content Management</div>
-          <div className="section-sub">Manage all public-facing content</div>
+          <div className="section-sub">Manage Terms, Privacy & Team</div>
         </div>
-        <button className={`btn ${saved ? 'btn-success' : 'btn-primary'}`} onClick={handleSave}>
-          <Save size={16} /> {saved ? 'Saved!' : 'Save & Publish'}
+
+        <button
+          className={`btn ${saved ? "btn-success" : "btn-primary"}`}
+          onClick={handleSave}
+        >
+          <Save size={16} /> {saved ? "Saved!" : "Save & Publish"}
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 22, alignItems: 'start' }}>
-        {/* Section Sidebar */}
-        <div className="card" style={{ padding: '8px 0' }}>
-          {CMS_SECTIONS.map(s => (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "220px 1fr",
+          gap: 22,
+        }}
+      >
+        {/* SIDEBAR */}
+        <div className="card" style={{ padding: "8px 0" }}>
+          {CMS_SECTIONS.map((s) => (
             <div
               key={s.key}
-              className={`cms-nav-item ${activeSection === s.key ? 'active' : ''}`}
+              className={`cms-nav-item ${
+                activeSection === s.key ? "active" : ""
+              }`}
               onClick={() => setActiveSection(s.key)}
-              style={{ borderRadius: 0 }}
             >
-              <s.icon size={16} style={{ color: activeSection === s.key ? s.color : 'var(--text-muted)' }} />
+              <s.icon size={16} />
               {s.label}
             </div>
           ))}
         </div>
 
-        {/* Content Area */}
+        {/* CONTENT */}
         <div>
-          {activeSection !== 'faq' ? (
+          {(activeSection === "terms" ||
+            activeSection === "privacy" ||
+            activeSection === "about") && (
             <div className="card" style={{ padding: 24 }}>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 16 }}>
-                    {CMS_SECTIONS.find(s => s.key === activeSection)?.label}
-                  </div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Last updated: April 20, 2026 · Version 1.0</div>
-                </div>
-                <div className="flex gap-2">
-                  <button className="btn btn-ghost btn-sm">Version History</button>
-                  <button className="btn btn-outline btn-sm"><Edit size={12} /> Preview</button>
-                </div>
+              <div style={{ fontWeight: 700, marginBottom: 10 }}>
+                {activeSection === "terms"
+                  ? "Terms & Conditions"
+                  : activeSection === "privacy"
+                    ? "Privacy Policy"
+                    : "About Us"}
               </div>
 
-              {/* Toolbar */}
-              <div className="cms-toolbar mb-3">
-                {['B', 'I', 'U', 'H1', 'H2', '—', '• List', '# Link'].map(tool => (
-                  <button key={tool} className="cms-tool-btn" title={tool}>{tool}</button>
-                ))}
-              </div>
-
+              {/* EDITOR */}
               <textarea
                 className="cms-editor form-textarea"
                 value={content[activeSection]}
-                onChange={e => setContent(c => ({ ...c, [activeSection]: e.target.value }))}
-                rows={18}
-                style={{ fontFamily: 'monospace', fontSize: 13, lineHeight: 1.8 }}
+                onChange={(e) =>
+                  setContent((c) => ({
+                    ...c,
+                    [activeSection]: e.target.value,
+                  }))
+                }
+                rows={12}
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: 13,
+                  lineHeight: 1.8,
+                }}
               />
-
-              <div className="flex items-center justify-between mt-4">
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                  {content[activeSection]?.length} characters · Draft saved automatically
-                </div>
-                <div className="flex gap-2">
-                  <button className="btn btn-ghost btn-sm">Reset to Default</button>
-                </div>
-              </div>
             </div>
-          ) : (
-            /* FAQ Manager */
-            <div>
-              {/* Add new FAQ */}
-              <div className="card" style={{ padding: 22, marginBottom: 20 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Plus size={16} style={{ color: 'var(--green)' }} /> Add New FAQ
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <div className="form-group">
-                    <label className="form-label">Question</label>
-                    <input className="form-input" placeholder="e.g. How do I participate?" value={newQ} onChange={e => setNewQ(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Answer</label>
-                    <textarea className="form-textarea" placeholder="Provide a clear, helpful answer..." value={newA} onChange={e => setNewA(e.target.value)} rows={3} />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button className="btn btn-primary" style={{ marginTop: 8 }} onClick={addFaq} disabled={!newQ || !newA}>
-                      <Plus size={14} /> Add FAQ
-                    </button>
-                  </div>
-                </div>
+          )}
+
+          {/* TEAM */}
+          {activeSection === "team" && (
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h3>Team Management</h3>
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setShowAddAdmin(true)}
+                >
+                  <Plus size={14} /> Add
+                </button>
               </div>
 
-              {/* FAQ List */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {faqs.map(faq => (
-                  <div key={faq.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                    <div
-                      style={{ padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
-                      onClick={() => setFaqOpen(faqOpen === faq.id ? null : faq.id)}
-                    >
-                      <span style={{ flex: 1, fontWeight: 600, fontSize: 13 }}>{faq.q}</span>
-                      <div className="flex gap-2">
-                        <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation() }}>
-                          <Edit size={12} />
+              <table style={{ width: "100%", marginTop: 20 }}>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {team.map((t) => (
+                    <tr key={t.id}>
+                      <td>{t.name}</td>
+                      <td>{t.email}</td>
+                      <td>{t.role}</td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => deleteAdmin(t.id)}
+                        >
+                          <Trash2 size={14} />
                         </button>
-                        <button className="btn btn-danger btn-sm" onClick={e => { e.stopPropagation(); deleteFaq(faq.id) }}>
-                          <Trash2 size={12} />
-                        </button>
-                        {faqOpen === faq.id ? <ChevronUp size={14} style={{ color: 'var(--text-muted)' }} /> : <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />}
-                      </div>
-                    </div>
-                    {faqOpen === faq.id && (
-                      <div style={{ padding: '0 18px 16px 18px', borderTop: '1px solid var(--border)', paddingTop: 14 }}>
-                        <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>{faq.a}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
       </div>
+
+      {/* ADD ADMIN MODAL */}
+      {showAddAdmin && (
+        <div className="modal-overlay" onClick={() => setShowAddAdmin(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">Add Admin</div>
+
+            <div className="modal-body">
+              <input
+                placeholder="Name"
+                value={newAdmin.name}
+                onChange={(e) =>
+                  setNewAdmin({ ...newAdmin, name: e.target.value })
+                }
+                className="form-input"
+              />
+
+              <input
+                placeholder="Email"
+                value={newAdmin.email}
+                onChange={(e) =>
+                  setNewAdmin({ ...newAdmin, email: e.target.value })
+                }
+                className="form-input"
+              />
+
+              <select
+                value={newAdmin.role}
+                onChange={(e) =>
+                  setNewAdmin({ ...newAdmin, role: e.target.value })
+                }
+                className="form-input"
+              >
+                <option>Admin</option>
+                <option>Support</option>
+                <option>Finance</option>
+              </select>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn" onClick={() => setShowAddAdmin(false)}>
+                Cancel
+              </button>
+              <button className="btn btn-primary" onClick={addAdmin}>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }

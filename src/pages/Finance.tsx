@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Wallet,
   DollarSign,
@@ -12,37 +12,61 @@ import {
 } from "lucide-react";
 import { mockLotteries } from "../data/mockData";
 import { useGetAnalyticsPaymentQuery } from "../store/services/finance.api";
+import {
+  useGetPaymentNumberQuery,
+  usePostPaymentNumberMutation,
+} from "../store/services/settings.api";
+import { toast } from "sonner";
 
 export default function Finance() {
   const [currency, setCurrency] = useState("CDF");
-  const [paymentNums, setPaymentNums] = useState([
-    "+243 810 000 001",
-    "+243 820 000 002",
-  ]);
+  const [paymentNums, setPaymentNums] = useState(["", ""]);
+
   const [filter, setFilter] = useState("all");
   const [saved, setSaved] = useState(false);
   const { data: analytics, isLoading } = useGetAnalyticsPaymentQuery({
     filter,
   });
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2200);
+  const [postPaymentNumber] = usePostPaymentNumberMutation();
+  const { data: paymentNumbers, isLoading: isPaymentNumbersLoading } =
+    useGetPaymentNumberQuery({});
+
+  const handleSave = async () => {
+    const payload = {
+      paymentNumbers: [
+        {
+          label: "M-Pesa primary number",
+          number: paymentNums[0],
+        },
+        {
+          label: "M-Pesa backup number",
+          number: paymentNums[1],
+        },
+      ],
+      currency: "CDF",
+    };
+
+    await postPaymentNumber(payload)
+      .unwrap()
+      .then(() => {
+        toast.success("Payment numbers updated successfully");
+      });
   };
+  const analyticsData = analytics?.data || {};
+  const paymentData = paymentNumbers?.data || {};
+  useEffect(() => {
+    if (paymentData?.paymentNumbers) {
+      setPaymentNums([
+        paymentData.paymentNumbers[0]?.number || "",
+        paymentData.paymentNumbers[1]?.number || "",
+      ]);
 
-  const totalRevenue = mockLotteries.reduce(
-    (acc, curr) => acc + curr.revenue,
-    0,
-  );
-  const ticketsSold = mockLotteries.reduce(
-    (acc, curr) => acc + curr.participants,
-    0,
-  );
-
-  if (isLoading) {
+      setCurrency(paymentData.currency || "CDF");
+    }
+  }, [paymentData]);
+  if (isLoading || isPaymentNumbersLoading) {
     return <div className="loading">Loading...</div>;
   }
-
-  const analyticsData = analytics?.data || {};
 
   return (
     <div>
@@ -314,8 +338,6 @@ export default function Finance() {
               style={{ width: 130 }}
             >
               <option value="CDF">CDF — Congolese Franc</option>
-              <option value="USD">USD — US Dollar</option>
-              <option value="EUR">EUR — Euro</option>
             </select>
           </div>
         </div>
