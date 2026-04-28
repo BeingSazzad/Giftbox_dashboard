@@ -3,25 +3,17 @@ import { useNavigate } from "react-router-dom";
 import {
   Gift,
   Users,
-  Clock,
   CheckCircle,
-  DollarSign,
   Plus,
-  Eye,
   Search,
-  TrendingUp,
   AlertCircle,
   Zap,
   BarChart2,
-  ArrowRight,
-  Trophy,
   Tag,
   CheckSquare,
-  CreditCard,
   Wallet,
-  Award,
 } from "lucide-react";
-import { mockLotteries, mockParticipants, mockUsers } from "../data/mockData";
+import { mockLotteries } from "../data/mockData";
 import { useGetUserQuery } from "../store/services/user.api";
 import { useGetDashboardDataQuery } from "../store/services/dashboard.api";
 import { AnalyticsCharts } from "../components/AnalyticsCharts";
@@ -115,15 +107,6 @@ export default function Dashboard() {
   const { data: user, isLoading } = useGetUserQuery({});
   const { data: dashboardData, isLoading: isDashboardDataLoading } =
     useGetDashboardDataQuery({});
-
-  const completedDraws = mockLotteries.filter(
-    (l) => l.status === "completed",
-  ).length;
-  const pendingPayments = mockParticipants.filter(
-    (p) => p.status === "pending",
-  ).length;
-  const ticketsSold = mockParticipants.reduce((s, p) => s + p.tickets, 0);
-  const totalRevenue = mockLotteries.reduce((s, l) => s + l.revenue, 0);
 
   const nextLottery = mockLotteries.find((l) => l.status === "active");
 

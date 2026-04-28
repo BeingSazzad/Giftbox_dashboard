@@ -9,6 +9,11 @@ import {
   useGetRolesQuery,
 } from "../store/services/role.api";
 import { toast } from "sonner";
+import {
+  useCreateAdminMutation,
+  useDeleteAdminFromDBMutation,
+  useGetAllAdminFromDBQuery,
+} from "../store/services/createAdmin.api";
 
 const CMS_SECTIONS = [
   { key: "terms", label: "Terms & Conditions", icon: FileText },
@@ -28,20 +33,10 @@ export default function CMS() {
 
   const [saved, setSaved] = useState(false);
 
-  // TEAM STATE (unchanged)
-  const [team, setTeam] = useState([
-    {
-      id: 1,
-      name: "Main Admin",
-      email: "admin@giftbox.cd",
-      role: "Owner",
-    },
-  ]);
-
   const [newAdmin, setNewAdmin] = useState({
     name: "",
     email: "",
-    role: "Admin",
+    password: "",
   });
 
   const [showAddAdmin, setShowAddAdmin] = useState(false);
@@ -50,13 +45,26 @@ export default function CMS() {
   const { data, isLoading } = useGetRolesQuery({});
   const { data: privacyData, isLoading: isPrivacyLoading } =
     useGetRolesPrivacyQuery({});
-  const { data: aboutData, isLoading: isAboutLoading } = useGetRolesAboutQuery(
-    {},
-  );
+  const {
+    data: aboutData,
+    isLoading: isAboutLoading,
+    refetch,
+  } = useGetRolesAboutQuery({});
 
   const [createRoles] = useCreateRolesMutation();
   const [createAboutRoles] = useCreateAboutRolesMutation();
   const [createPrivacyRoles] = useCreatePrivacyRolesMutation();
+
+  // create user
+  const [createAdmin] = useCreateAdminMutation();
+  const {
+    data: allAdmins,
+    isLoading: isAllAdminsLoading,
+    refetch: refetchAllAdmins,
+  } = useGetAllAdminFromDBQuery({});
+
+  // delete user
+  const [deleteAdmins] = useDeleteAdminFromDBMutation();
 
   // TERMS
   useEffect(() => {
@@ -110,30 +118,55 @@ export default function CMS() {
       }
 
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
 
       toast.success("Content saved successfully");
-    } catch (error) {
-      toast.error("Failed to save content");
+    } catch (error: any) {
+      toast.error(`${error.message}`);
     }
   };
 
-  // TEAM (unchanged)
-  const addAdmin = () => {
-    if (!newAdmin.name || !newAdmin.email) return;
-
-    setTeam((prev) => [...prev, { id: Date.now(), ...newAdmin }]);
-    setNewAdmin({ name: "", email: "", role: "Admin" });
-    setShowAddAdmin(false);
+  const handleCreateUser = async () => {
+    const toastId = toast.loading("Creating admin...");
+    await createAdmin({
+      name: newAdmin.name,
+      email: newAdmin.email,
+      password: newAdmin.password,
+      role: "ADMIN",
+    })
+      .unwrap()
+      .then(() => {
+        toast.success("Admin created successfully");
+      })
+      .catch((error: any) => {
+        toast.error(`${error.data.message}`);
+      })
+      .finally(() => {
+        toast.dismiss(toastId);
+      });
   };
 
-  const deleteAdmin = (id: number) => {
-    setTeam((prev) => prev.filter((t) => t.id !== id));
+  const deleteAdmin = async (id: number) => {
+    const toastId = toast.loading("Deleting admin...");
+    await deleteAdmins(id)
+      .unwrap()
+      .then(() => {
+        toast.success("Admin deleted successfully");
+        refetchAllAdmins();
+      })
+      .catch((error: any) => {
+        console.error("Error deleting admin:", error);
+        toast.error(`${error.data.message}`);
+      })
+      .finally(() => {
+        toast.dismiss(toastId);
+      });
   };
 
-  if (isLoading || isPrivacyLoading || isAboutLoading) {
+  if (isLoading || isPrivacyLoading || isAboutLoading || isAllAdminsLoading) {
     return <div className="loading">Loading...</div>;
   }
+
+  const adminData = allAdmins?.data?.data || [];
 
   return (
     <div>
@@ -233,15 +266,15 @@ export default function CMS() {
                 </thead>
 
                 <tbody>
-                  {team.map((t) => (
-                    <tr key={t.id}>
-                      <td>{t.name}</td>
-                      <td>{t.email}</td>
-                      <td>{t.role}</td>
+                  {adminData?.map((admin: any) => (
+                    <tr key={admin._id}>
+                      <td>{admin.name}</td>
+                      <td>{admin.email}</td>
+                      <td>{admin.role}</td>
                       <td>
                         <button
                           className="btn btn-danger btn-sm"
-                          onClick={() => deleteAdmin(t.id)}
+                          onClick={() => deleteAdmin(admin._id)}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -258,12 +291,39 @@ export default function CMS() {
       {/* ADD ADMIN MODAL */}
       {showAddAdmin && (
         <div className="modal-overlay" onClick={() => setShowAddAdmin(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">Add Admin</div>
+          <div
+            className="modal"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 420,
+              borderRadius: 16,
+              padding: 0,
+              overflow: "hidden",
+            }}
+          >
+            {/* HEADER */}
+            <div
+              style={{
+                padding: "18px 22px",
+                borderBottom: "1px solid var(--border)",
+                fontWeight: 600,
+                fontSize: 16,
+              }}
+            >
+              Add Admin
+            </div>
 
-            <div className="modal-body">
+            {/* BODY */}
+            <div
+              style={{
+                padding: 22,
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
               <input
-                placeholder="Name"
+                placeholder="Full Name"
                 value={newAdmin.name}
                 onChange={(e) =>
                   setNewAdmin({ ...newAdmin, name: e.target.value })
@@ -272,33 +332,74 @@ export default function CMS() {
               />
 
               <input
-                placeholder="Email"
+                placeholder="Email Address"
                 value={newAdmin.email}
                 onChange={(e) =>
                   setNewAdmin({ ...newAdmin, email: e.target.value })
                 }
                 className="form-input"
               />
-
-              <select
-                value={newAdmin.role}
+              <input
+                placeholder="Password"
+                type="password"
+                value={newAdmin.password}
                 onChange={(e) =>
-                  setNewAdmin({ ...newAdmin, role: e.target.value })
+                  setNewAdmin({ ...newAdmin, password: e.target.value })
                 }
                 className="form-input"
-              >
-                <option>Admin</option>
-                <option>Support</option>
-                <option>Finance</option>
-              </select>
+              />
+
+              {/* FIXED ROLE */}
+              <div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "var(--text-muted)",
+                    marginBottom: 6,
+                  }}
+                >
+                  Role
+                </div>
+
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    border: "1px solid var(--border)",
+                    borderRadius: 8,
+                    background: "var(--bg-elevated)",
+                    fontWeight: 600,
+                  }}
+                >
+                  ADMIN
+                </div>
+              </div>
             </div>
 
-            <div className="modal-footer">
-              <button className="btn" onClick={() => setShowAddAdmin(false)}>
+            {/* FOOTER */}
+            <div
+              style={{
+                padding: "16px 22px",
+                borderTop: "1px solid var(--border)",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 10,
+              }}
+            >
+              <button
+                className="btn btn-ghost"
+                onClick={() => setShowAddAdmin(false)}
+              >
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={addAdmin}>
-                Add
+
+              <button
+                className="btn btn-primary"
+                onClick={handleCreateUser}
+                disabled={
+                  !newAdmin.name || !newAdmin.email || !newAdmin.password
+                }
+              >
+                Add Admin
               </button>
             </div>
           </div>

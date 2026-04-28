@@ -269,6 +269,7 @@ export default function Settings() {
                 <button
                   className="btn btn-outline btn-sm"
                   onClick={() =>
+                    // @ts-ignore
                     fileInputRef.current && fileInputRef.current.click()
                   }
                 >
@@ -281,7 +282,7 @@ export default function Settings() {
                   style={{ display: "none" }}
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
-                      setAdminAvatar(URL.createObjectURL(e.target.files[0]) );
+                      setAdminAvatar(URL.createObjectURL(e.target.files[0]));
                       setImageFile(e.target.files[0]);
                     }
                   }}

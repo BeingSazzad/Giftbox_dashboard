@@ -23,7 +23,22 @@ const userApi = api.injectEndpoints({
         },
       }),
     }),
+    // single user
+    getSingleUser: build.query({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "GET",
+      }),
+    }), 
+    // do user active and inactive
+    updateUserStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `/users/status/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+    }),
   }),
 });
 
-export const { useGetUserQuery, useGetAllUsersQuery } = userApi;
+export const { useGetUserQuery, useGetAllUsersQuery, useGetSingleUserQuery, useUpdateUserStatusMutation } = userApi;

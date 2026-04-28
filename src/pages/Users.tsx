@@ -7,12 +7,22 @@ import {
   UserCheck,
   UserMinus,
   Eye,
-  UserX,
+  X,
+  Mail,
+  Phone,
+  MapPin,
+  CalendarDays,
+  Ticket,
+  Trophy,
 } from "lucide-react";
-import { useGetAllUsersQuery } from "../store/services/user.api";
+import {
+  useGetAllUsersQuery,
+  useUpdateUserStatusMutation,
+} from "../store/services/user.api";
 import { getImageUrl } from "../shared/getImageUrl";
 import Pagination from "../shared/Pagination";
 import useDebounce from "../hook/useDebounce";
+import { toast } from "sonner";
 
 export default function Users() {
   const navigate = useNavigate();
@@ -23,12 +33,20 @@ export default function Users() {
   const [cityFilter, setCityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [pageSize] = useState(10);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+
+  // api call
+  const [updateUserStatus] = useUpdateUserStatusMutation();
 
   // debounce hook
   const debouncedSearch = useDebounce(search, 500);
 
   // Fetch users with filters & pagination
-  const { data: allUsers, isLoading: isAllUsersLoading } = useGetAllUsersQuery({
+  const {
+    data: allUsers,
+    isLoading: isAllUsersLoading,
+    refetch,
+  } = useGetAllUsersQuery({
     page: currentPage,
     limit: pageSize,
     searchTerm: debouncedSearch,
@@ -53,6 +71,28 @@ export default function Users() {
   if (isAllUsersLoading) {
     return <div className="loading">Loading...</div>;
   }
+  const handleUpdateUserStatus = async (payload: any) => {
+    const isSuspending = payload.status === "INACTIVE";
+    const taskId = toast.loading(
+      `${isSuspending ? "Suspending" : "Unsuspending"} user...`,
+    );
+    await updateUserStatus(payload)
+      .unwrap()
+      .then(() => {
+        toast.success(
+          `User has been ${isSuspending ? "suspended" : "unsuspended"} successfully.`,
+        );
+        refetch();
+      })
+      .catch((error: any) => {
+        toast.error(
+          `Failed to update user status: ${error.data?.message || error.message}`,
+        );
+      })
+      .finally(() => {
+        toast.dismiss(taskId);
+      });
+  };
 
   return (
     <div>
@@ -262,15 +302,29 @@ export default function Users() {
                   <div className="flex gap-2">
                     <button
                       className="btn btn-outline btn-sm"
-                      onClick={() => navigate(`/users/${user._id}`)}
+                      onClick={() => setSelectedUser(user)}
+                      title="View details"
                     >
                       <Eye size={12} />
                     </button>
                     <button
-                      className="btn btn-danger btn-sm"
+                      className={`btn btn-sm ${
+                        user.status === "ACTIVE" ? "btn-danger" : "btn-outline"
+                      }`}
+                      onClick={() =>
+                        handleUpdateUserStatus({
+                          id: user._id,
+                          status:
+                            user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE",
+                        })
+                      }
                       title={user.status === "ACTIVE" ? "Suspend" : "Unsuspend"}
                     >
-                      <UserX size={12} />
+                      {user.status === "ACTIVE" ? (
+                        <UserMinus size={12} />
+                      ) : (
+                        <UserCheck size={12} />
+                      )}
                     </button>
                   </div>
                 </td>
@@ -293,6 +347,195 @@ export default function Users() {
           </div>
         )}
       </div>
+
+      {selectedUser && (
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedUser(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(8, 15, 30, 0.6)",
+            backdropFilter: "blur(8px)",
+            display: "grid",
+            placeItems: "center",
+            padding: 16,
+            zIndex: 50,
+          }}
+        >
+          <div
+            className="modal-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(680px, 100%)",
+              background: "var(--card-bg, #fff)",
+              border: "1px solid var(--border)",
+              borderRadius: 24,
+              boxShadow: "0 24px 80px rgba(0, 0, 0, 0.28)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: 16,
+                padding: 24,
+                borderBottom: "1px solid var(--border)",
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.96))",
+              }}
+            >
+              <div className="flex items-center gap-4">
+                <img
+                  src={
+                    getImageUrl(selectedUser.profileImage) ||
+                    "/default-avatar.png"
+                  }
+                  alt={selectedUser.name}
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "2px solid var(--border)",
+                    flexShrink: 0,
+                  }}
+                />
+                <div>
+                  <div className="section-title" style={{ marginBottom: 4 }}>
+                    {selectedUser.name}
+                  </div>
+                  <div className="section-sub" style={{ marginBottom: 10 }}>
+                    User details and activity summary
+                  </div>
+                  <span
+                    className={`badge ${
+                      selectedUser.status === "ACTIVE"
+                        ? "badge-active"
+                        : "badge-rejected"
+                    }`}
+                  >
+                    {selectedUser.status?.toLowerCase?.() || "unknown"}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setSelectedUser(null)}
+                aria-label="Close user details"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div style={{ padding: 24 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: 14,
+                }}
+              >
+                {[
+                  {
+                    label: "Email",
+                    value: selectedUser.email || "N/A",
+                    icon: Mail,
+                  },
+                  {
+                    label: "Phone",
+                    value: selectedUser.phone || "N/A",
+                    icon: Phone,
+                  },
+                  {
+                    label: "City",
+                    value: selectedUser.city || "N/A",
+                    icon: MapPin,
+                  },
+                  {
+                    label: "Joined",
+                    value: selectedUser.createdAt
+                      ? new Date(selectedUser.createdAt).toLocaleDateString()
+                      : "N/A",
+                    icon: CalendarDays,
+                  },
+                  {
+                    label: "Tickets",
+                    value: selectedUser.stats?.totalParticipated || 0,
+                    icon: Ticket,
+                  },
+                  {
+                    label: "Wins",
+                    value: selectedUser.stats?.totalWins || 0,
+                    icon: Trophy,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    style={{
+                      border: "1px solid var(--border)",
+                      borderRadius: 18,
+                      padding: 16,
+                      background: "var(--surface, #fff)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <div
+                      className="metric-icon accent"
+                      style={{ width: 42, height: 42, flexShrink: 0 }}
+                    >
+                      <item.icon size={18} strokeWidth={2.4} />
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
+                          color: "var(--text-muted)",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {item.label}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 700,
+                          color: "var(--text-primary)",
+                        }}
+                      >
+                        {item.value}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: 12,
+                  marginTop: 24,
+                }}
+              >
+                <button
+                  className="btn btn-danger"
+                  onClick={() => setSelectedUser(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

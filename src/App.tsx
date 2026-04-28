@@ -1,28 +1,30 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Login from './pages/Login'
-import Layout from './components/Layout'
-import Dashboard from './pages/Dashboard'
-import LotteryList from './pages/LotteryList'
-import LotteryCreate from './pages/LotteryCreate'
-import LotteryDetail from './pages/LotteryDetail'
-import WinnerSelection from './pages/WinnerSelection'
-import Users from './pages/Users'
-import UserProfile from './pages/UserProfile'
-import Support from './pages/Support'
-import CMS from './pages/CMS'
-import Settings from './pages/Settings'
-import Finance from './pages/Finance'
-import Notifications from './pages/Notifications'
-import { getFromLocalStorage, TOKEN_STORAGE_KEY } from './utils/local-storage'
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Layout from "./components/Layout";
+import Dashboard from "./pages/Dashboard";
+import LotteryList from "./pages/LotteryList";
+import LotteryCreate from "./pages/LotteryCreate";
+import LotteryDetail from "./pages/LotteryDetail";
+import WinnerSelection from "./pages/WinnerSelection";
+import Users from "./pages/Users";
+import UserProfile from "./pages/UserProfile";
+import Support from "./pages/Support";
+import CMS from "./pages/CMS";
+import Settings from "./pages/Settings";
+import Finance from "./pages/Finance";
+import Notifications from "./pages/Notifications";
+import { getFromLocalStorage, TOKEN_STORAGE_KEY } from "./utils/local-storage";
 
 export default function App() {
-  const [auth, setAuth] = useState(() => Boolean(getFromLocalStorage(TOKEN_STORAGE_KEY)))
+  const [auth, setAuth] = useState(() =>
+    Boolean(getFromLocalStorage(TOKEN_STORAGE_KEY)),
+  );
 
   const handleLogout = () => {
-    localStorage.removeItem(TOKEN_STORAGE_KEY)
-    setAuth(false)
-  }
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    setAuth(false);
+  };
 
   return (
     <BrowserRouter>
@@ -49,5 +51,5 @@ export default function App() {
         </Routes>
       )}
     </BrowserRouter>
-  )
+  );
 }
