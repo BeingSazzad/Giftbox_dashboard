@@ -608,7 +608,13 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
 .countdown-sep { color: #D97706; font-weight: 700; font-size: 20px; opacity: 0.5; margin-top: -16px; }
 
 /* ===== LOTTERY GRID ===== */
-.lottery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.lottery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  justify-content: start;
+  gap: 18px;
+  align-items: stretch;
+}
 .lottery-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -616,9 +622,16 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   overflow: hidden;
   transition: var(--transition);
   box-shadow: var(--shadow-card);
+  height: 100%;
+  width: 100%;
+  max-width: 320px;
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
 }
 .lottery-card:hover { border-color: var(--border-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .lottery-banner { height: 140px; background: var(--bg-elevated); position: relative; overflow: hidden; }
+.lottery-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .lottery-banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.35) 0%, transparent 60%); }
 .lottery-banner-badge { position: absolute; top: 10px; left: 10px; }
 .lottery-countdown-badge {
@@ -627,12 +640,18 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   border-radius: var(--radius-sm);
   padding: 3px 8px; font-size: 11px; font-weight: 700; color: #FCD34D;
 }
-.lottery-body { padding: 15px 16px; }
+.lottery-body { padding: 15px 16px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .lottery-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
-.lottery-meta { display: flex; gap: 12px; margin-bottom: 12px; }
+.lottery-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.lottery-body > div:nth-of-type(3) { flex: 1; }
 .lottery-stat { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
 .lottery-stat strong { color: var(--text-secondary); }
-.lottery-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.lottery-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+
+@media (max-width: 640px) {
+  .lottery-grid { grid-template-columns: 1fr; justify-content: stretch; }
+  .lottery-card { border-radius: var(--radius-md); max-width: none; min-height: 400px; }
+}
 
 /* ===== STEP WIZARD ===== */
 .stepper { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
