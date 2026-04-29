@@ -8,10 +8,12 @@ export default function Support() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('All')
 
-  const filtered = messages.filter(m => {
-    const matchSearch = m.user.toLowerCase().includes(search.toLowerCase()) || 
-                        m.issue.toLowerCase().includes(search.toLowerCase()) ||
-                        m.id.toLowerCase().includes(search.toLowerCase())
+  const filtered = (messages || []).filter(m => {
+    if (!m) return false;
+    const searchLower = (search || '').toLowerCase();
+    const matchSearch = (m.user || '').toLowerCase().includes(searchLower) || 
+                        (m.issue || '').toLowerCase().includes(searchLower) ||
+                        (m.id || '').toLowerCase().includes(searchLower)
     const matchFilter = filter === 'All' || m.status === filter.toLowerCase().replace(' ', '-')
     return matchSearch && matchFilter
   })
@@ -257,7 +259,7 @@ export default function Support() {
                 <div style={{ display: 'flex', gap: 12, flexDirection: 'column' }}>
                   <textarea className="form-textarea" placeholder="Type your reply here..." style={{ minHeight: 100 }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Reply will be sent via App Push Notification</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Reply will be sent via App Notification</div>
                     <div style={{ display: 'flex', gap: 10 }}>
                       <button className="btn btn-ghost" onClick={() => markResolved(selectedTicket.id)}>Mark Resolved</button>
                       <button className="btn btn-primary" onClick={() => markResolved(selectedTicket.id)}>Send Reply</button>

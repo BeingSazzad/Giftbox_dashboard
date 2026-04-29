@@ -337,7 +337,7 @@ export default function WinnerSelection() {
           {!published ? (
              <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 16, border: '1px solid var(--border)', width: '100%' }}>
                <div style={{ background: 'rgba(16,185,129,.1)', color: 'var(--green)', borderRadius: 12, padding: '14px 20px', marginBottom: 20, fontSize: 13, textAlign: 'left', fontWeight: 500 }}>
-                 ✅ Publishing will push the announcement to the user app and notify all participants.
+                 ✅ Publishing will announce the result to the user app and notify all participants.
                </div>
                <button className="btn btn-primary btn-lg" style={{ margin: '0 auto', width: '100%' }} onClick={publishResult}>
                  <Send size={16} /> Publish Winners Announcement

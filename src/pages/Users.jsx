@@ -9,10 +9,11 @@ export default function Users() {
   const [cityFilter, setCityFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
 
-  const cities = ['All', ...new Set(mockUsers.map(u => u.city))]
+  const cities = ['All', ...new Set((mockUsers || []).map(u => u?.city || 'Unknown'))]
 
-  const filtered = mockUsers.filter(u => {
-    const matchSearch = u.name.toLowerCase().includes(search.toLowerCase()) || u.phone.includes(search)
+  const filtered = (mockUsers || []).filter(u => {
+    if (!u) return false;
+    const matchSearch = (u.name || '').toLowerCase().includes((search || '').toLowerCase()) || (u.phone || '').includes(search)
     const matchCity = cityFilter === 'All' || u.city === cityFilter
     const matchStatus = statusFilter === 'All' || u.status === statusFilter
     return matchSearch && matchCity && matchStatus

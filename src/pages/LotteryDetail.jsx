@@ -35,13 +35,13 @@ export default function LotteryDetail() {
   const [pageSize, setPageSize] = useState(10)
   const [goToPage, setGoToPage] = useState('')
 
-  const [lottery, setLottery] = useState(mockLotteries.find(l => l.id === id))
+  const [lottery, setLottery] = useState((mockLotteries || []).find(l => l?.id === id))
   const { d, h, m, s } = useCountdown(lottery?.endDate || '')
 
   // Pagination logic
-  const filteredParticipants = tab === 'participants' ? participants : participants.filter(p => p.status === 'pending')
-  const totalPages = Math.ceil(filteredParticipants.length / pageSize)
-  const paginatedList = filteredParticipants.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  const filteredParticipants = tab === 'participants' ? (participants || []) : (participants || []).filter(p => p?.status === 'pending')
+  const totalPages = Math.ceil(filteredParticipants.length / (pageSize || 10))
+  const paginatedList = filteredParticipants.slice((currentPage - 1) * (pageSize || 10), currentPage * (pageSize || 10))
 
   const changeTab = (t) => {
     setTab(t)
@@ -58,10 +58,10 @@ export default function LotteryDetail() {
   }
 
   const statCounts = {
-    all: participants.length,
-    approved: participants.filter(p => p.status === 'approved').length,
-    pending: participants.filter(p => p.status === 'pending').length,
-    rejected: participants.filter(p => p.status === 'rejected').length,
+    all: (participants || []).length,
+    approved: (participants || []).filter(p => p?.status === 'approved').length,
+    pending: (participants || []).filter(p => p?.status === 'pending').length,
+    rejected: (participants || []).filter(p => p?.status === 'rejected').length,
   }
 
   if (!lottery) return (
@@ -205,28 +205,28 @@ export default function LotteryDetail() {
                 <Trophy size={14} /> {lottery.winners.length} {lottery.winners.length > 1 ? 'Winners' : 'Winner'} Drawn
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {lottery.winners.map((w, idx) => (
+                {(lottery?.winners || []).map((w, idx) => (
                   <div key={idx} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <img src={w.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--gold)' }} />
+                    <img src={w?.avatar} alt="" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--gold)' }} />
                     <div>
                       <div 
-                        onClick={() => navigate(`/users/${w.id}`)}
+                        onClick={() => navigate(`/users/${w?.id}`)}
                         style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 15, cursor: 'pointer' }}
                         onMouseOver={e => e.target.style.color = 'var(--primary)'}
                         onMouseOut={e => e.target.style.color = 'var(--text-primary)'}
                       >
-                        {w.name}
+                        {w?.name}
                       </div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', gap: 8 }}>
-                        <span>{w.phone}</span>
-                        {w.email && (
+                        <span>{w?.phone}</span>
+                        {w?.email && (
                           <>
                             <span style={{ opacity: 0.5 }}>•</span>
-                            <span>{w.email}</span>
+                            <span>{w?.email}</span>
                           </>
                         )}
                         <span style={{ opacity: 0.5 }}>•</span>
-                        <span>{w.city}</span>
+                        <span>{w?.city}</span>
                       </div>
                     </div>
                     <div 

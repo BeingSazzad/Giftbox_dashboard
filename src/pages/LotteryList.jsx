@@ -13,11 +13,12 @@ export default function LotteryList() {
 
   const statusOrder = { closed: 1, active: 2, scheduled: 3, draft: 4 }
 
-  const filtered = mockLotteries.filter(l => {
+  const filtered = (mockLotteries || []).filter(l => {
+    if (!l) return false;
     const matchStatus = filter === 'All' || l.status === filter
-    const matchSearch = l.title.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = (l.title || '').toLowerCase().includes((search || '').toLowerCase())
     return matchStatus && matchSearch
-  }).sort((a, b) => (statusOrder[a.status] || 99) - (statusOrder[b.status] || 99))
+  }).sort((a, b) => (statusOrder[a?.status] || 99) - (statusOrder[b?.status] || 99))
 
   return (
     <div>

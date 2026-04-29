@@ -26,6 +26,7 @@ const revenueData = [
 
 function useCountdown(targetDate) {
   const calc = () => {
+    if (!targetDate) return { d: 0, h: 0, m: 0, s: 0 }
     const diff = new Date(targetDate) - new Date()
     if (diff <= 0) return { d: 0, h: 0, m: 0, s: 0 }
     const d = Math.floor(diff / 86400000)
@@ -68,19 +69,19 @@ const QUICK_ACTIONS = [
 export default function Dashboard() {
   const navigate = useNavigate()
 
-  const completedDraws = mockLotteries.filter(l => l.status === 'completed').length;
-  const pendingPayments = mockParticipants.filter(p => p.status === 'pending').length;
-  const ticketsSold = mockParticipants.reduce((s, p) => s + p.tickets, 0);
-  const totalRevenue = mockLotteries.reduce((s, l) => s + l.revenue, 0);
+  const completedDraws = (mockLotteries || []).filter(l => l?.status === 'completed').length;
+  const pendingPayments = (mockParticipants || []).filter(p => p?.status === 'pending').length;
+  const ticketsSold = (mockParticipants || []).reduce((s, p) => s + (p?.tickets || 0), 0);
+  const totalRevenue = (mockLotteries || []).reduce((s, l) => s + (l?.revenue || 0), 0);
 
   const metrics = [
-    { label: 'Total Users', value: mockUsers.length.toLocaleString(), icon: Users, color: 'blue', change: '12%', dir: 'up' },
+    { label: 'Total Users', value: (mockUsers || []).length.toLocaleString(), icon: Users, color: 'blue', change: '12%', dir: 'up' },
     { label: 'Draws Completed', value: completedDraws.toLocaleString(), icon: CheckSquare, color: 'accent', change: '1', dir: 'up' },
     { label: 'Tickets Sold', value: ticketsSold.toLocaleString(), icon: Tag, color: 'green', change: '24%', dir: 'up' },
-    { label: 'Total Revenue', value: `${(totalRevenue / 1000).toFixed(0)}K CDF`, icon: Wallet, color: 'pink', change: '18%', dir: 'up' },
+    { label: 'Total Revenue', value: `${((totalRevenue || 0) / 1000).toFixed(0)}K CDF`, icon: Wallet, color: 'pink', change: '18%', dir: 'up' },
   ]
 
-  const nextLottery = mockLotteries.find(l => l.status === 'active')
+  const nextLottery = (mockLotteries || []).find(l => l?.status === 'active')
 
 
   return (

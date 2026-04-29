@@ -18,7 +18,7 @@ const DEFAULT_FAQS = [
   { id: '1', q: 'How do I participate in a lottery?', a: 'Download the GiftBox app, register with your phone number, select an active lottery, and pay for your ticket via M-Pesa or Orange Money.', open: false },
   { id: '2', q: 'What payment methods are accepted?', a: 'We accept M-Pesa and Orange Money. After payment, upload your proof of payment in the app.', open: false },
   { id: '3', q: 'How is the winner selected?', a: 'Winners are chosen using a certified random selection tool from all approved participants only.', open: false },
-  { id: '4', q: 'How will I know if I win?', a: 'Winners are notified via SMS and a push notification in the GiftBox app. Results are also published in the app.', open: false },
+  { id: '4', q: 'How will I know if I win?', a: 'Winners are notified via SMS and a notification in the GiftBox app. Results are also published in the app.', open: false },
   { id: '5', q: 'Can I buy multiple tickets?', a: 'Yes! You can buy up to 10 tickets per lottery, increasing your chances of winning.', open: false },
 ]
 
