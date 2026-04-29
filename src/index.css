@@ -319,6 +319,119 @@ img { max-width: 100%; }
 }
 .btn-danger:hover { background: rgba(239,68,68,.18); }
 
+/* ===== PAGINATION ===== */
+.pagination {
+  margin-top: 24px;
+  padding-top: 16px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pagination__info {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.pagination__info-current,
+.pagination__info-total {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination__nav,
+.pagination__page {
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pagination__nav {
+  padding: 0 12px;
+  gap: 6px;
+}
+
+.pagination__nav:hover:not(:disabled),
+.pagination__page:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-dark);
+}
+
+.pagination__nav:disabled,
+.pagination__page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pagination__page {
+  min-width: 38px;
+  padding: 0 10px;
+}
+
+.pagination__page--active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.18);
+}
+
+.pagination__page--active:hover:not(:disabled) {
+  background: var(--primary-light);
+  color: #fff;
+  border-color: var(--primary-light);
+}
+
+.pagination__dots {
+  min-width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tiny);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination__controls {
+    justify-content: space-between;
+  }
+
+  .pagination__pages {
+    justify-content: center;
+  }
+}
+
 .btn-success {
   background: var(--green-bg);
   border-color: rgba(16,185,129,.25);
@@ -495,7 +608,13 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
 .countdown-sep { color: #D97706; font-weight: 700; font-size: 20px; opacity: 0.5; margin-top: -16px; }
 
 /* ===== LOTTERY GRID ===== */
-.lottery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.lottery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  justify-content: start;
+  gap: 18px;
+  align-items: stretch;
+}
 .lottery-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -503,9 +622,16 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   overflow: hidden;
   transition: var(--transition);
   box-shadow: var(--shadow-card);
+  height: 100%;
+  width: 100%;
+  max-width: 320px;
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
 }
 .lottery-card:hover { border-color: var(--border-dark); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .lottery-banner { height: 140px; background: var(--bg-elevated); position: relative; overflow: hidden; }
+.lottery-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .lottery-banner-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.35) 0%, transparent 60%); }
 .lottery-banner-badge { position: absolute; top: 10px; left: 10px; }
 .lottery-countdown-badge {
@@ -514,12 +640,18 @@ tbody td { padding: 12px 14px; font-size: 13px; color: var(--text-secondary); ve
   border-radius: var(--radius-sm);
   padding: 3px 8px; font-size: 11px; font-weight: 700; color: #FCD34D;
 }
-.lottery-body { padding: 15px 16px; }
+.lottery-body { padding: 15px 16px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
 .lottery-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
-.lottery-meta { display: flex; gap: 12px; margin-bottom: 12px; }
+.lottery-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.lottery-body > div:nth-of-type(3) { flex: 1; }
 .lottery-stat { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
 .lottery-stat strong { color: var(--text-secondary); }
-.lottery-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.lottery-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+
+@media (max-width: 640px) {
+  .lottery-grid { grid-template-columns: 1fr; justify-content: stretch; }
+  .lottery-card { border-radius: var(--radius-md); max-width: none; min-height: 400px; }
+}
 
 /* ===== STEP WIZARD ===== */
 .stepper { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
